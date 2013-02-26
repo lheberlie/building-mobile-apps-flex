@@ -1,6 +1,9 @@
-# ds2013-mobile-flex
+# building-mobile-apps-flex
 <!-- short description -->
-This is the source code, samples, and documentation from the [2013 Esri Developer Summit Technical Workshop Session - Building Mobile Web Apps with Flex](http://www.esri.com)
+This is the source code, samples, and documentation from the [Esri Developer Summit](http://www.esri.com/devsummit) Technical Workshop Session - [Building Mobile Web Applications with the ArcGIS API for Flex](http://www.esri.com)
+
+<!-- long description -->
+* In this session we show you how easy it is to use Flex to deploy native mobile mapping applications on iPhone and Android. We’ll cover considerations for mobile versus web development. And, explore topics such as map performance, events, multiple views as well as handling gesture, orientation changes and we’ll also cover debugging tips.
 
 <!-- thumbnail with hyperlink -->
 [![Screenshot](https://github.com/Esri/ds2013-mobile-flex/tree/develop/ds2013-mobile-flex.png "Screenshot")](http://www.esri.com)
@@ -10,13 +13,12 @@ This repository includes:
 
 
 * The ... source code.
-* Read the [Change Log](https://github.com/lheberlie/thematic-widget-flex/blob/master/CHANGELOG.md) for details on what's new.
-* Read the [Documentation](https://github.com/Esri/ds2013-mobile-flex/wiki) for getting started using this repository.
+* Read the [Documentation](../../wiki) for getting started using this repository.
 
 ## Features
 
 ## Instructions
-What do you want to do with this source code?
+
 
 ## Requirements
 * Knowledge of Flex development.
@@ -32,10 +34,10 @@ What do you want to do with this source code?
 
 ## Issues
 
-Find a bug or want to request a new feature?  Please let us know by [submitting an issue](https://github.com/Esri/ds2013-mobile-flex/issues).
+Find a bug or want to request a new feature?  Please let us know by [submitting an issue](../../issues).
 
 ## Contributing
-Anyone and everyone is welcome to contribute.
+Anyone and everyone is welcome to [contribute](CONTRIBUTING.md).
 
 ## Licensing
 Copyright 2013 Esri
