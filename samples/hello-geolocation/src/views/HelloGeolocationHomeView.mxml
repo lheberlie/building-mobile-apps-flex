@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+///////////////////////////////////////////////////////////////////////////
+// Copyright (c) 2010-2013 Esri. All Rights Reserved.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//    http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+///////////////////////////////////////////////////////////////////////////
+-->
+<s:View xmlns:fx="http://ns.adobe.com/mxml/2009"
+        xmlns:s="library://ns.adobe.com/flex/spark"
+        xmlns:esri="http://www.esri.com/2008/ags"
+        xmlns:components="com.github.lheberlie.components.*"
+        actionBarVisible="false"
+        backgroundAlpha="0"
+        creationComplete="helloGeolocationHomeView_creationCompleteHandler(event)"
+        initialize="helloGeolocationHomeView_initializeHandler(event)"
+        viewActivate="helloGeolocationHomeView_viewActivateHandler(event)">
+
+    <fx:Script>
+        <![CDATA[
+            import com.esri.ags.Graphic;
+            import com.esri.ags.events.LayerEvent;
+            import com.esri.ags.events.MapEvent;
+
+            import flash.sensors.Geolocation;
+
+            import mx.collections.ArrayCollection;
+            import mx.events.FlexEvent;
+
+            import spark.events.ViewNavigatorEvent;
+
+            import assets.fxg.location_blue_pin;
+
+            [Bindable]
+            private var lifeCycleArrayCollection:ArrayCollection = new ArrayCollection();
+
+            private var geoLocation:Geolocation;
+
+            protected function helloGeolocationHomeView_initializeHandler(event:FlexEvent):void
+            {
+                lifeCycleArrayCollection.addItem("View Initialized");
+            }
+
+            protected function helloGeolocationHomeView_creationCompleteHandler(event:FlexEvent):void
+            {
+                lifeCycleArrayCollection.addItem("View Creation Complete");
+                if (Geolocation.isSupported == true)
+                {
+                    geoLocation = new Geolocation();
+                    geoLocation.setRequestedUpdateInterval(100);
+                    geoLocation.addEventListener(GeolocationEvent.UPDATE, geolocationEventUpdateHandler, false, 0, true);
+                }
+                else
+                {
+                    geolocationIsSupported.text = "GPS is not supported on your device";
+                }
+            }
+
+            protected function helloGeolocationHomeView_viewActivateHandler(event:ViewNavigatorEvent):void
+            {
+                lifeCycleArrayCollection.addItem("View Activated");
+            }
+
+            protected function map_loadHandler(event:MapEvent):void
+            {
+                lifeCycleArrayCollection.addItem("Map loaded");
+                map.defaultGraphicsLayer.add(gpsGraphic);
+            }
+
+            protected function worldTopoMap_loadHandler(event:LayerEvent):void
+            {
+                lifeCycleArrayCollection.addItem("BaseMap loaded");
+            }
+
+            protected function geolocationEventUpdateHandler(event:GeolocationEvent):void
+            {
+                var mph:Number = event.speed * 2.23693629;
+                var kph:Number = event.speed * 3.6;
+                geolocationIsSupported.text = "Updated: " + dateFormatter.format(new Date());
+                geolocationStatus.text = "latitude: " + numberFormatter.format(event.latitude.toString()) + "\n"
+                    + "longitude: " + numberFormatter.format(event.longitude.toString()) + "\n"
+                    + "altitude: " + numberFormatter.format(event.altitude.toString()) + "\n"
+                    + "speed: " + event.speed.toString() + "\n"
+                    + "speed: " + mph.toString() + " MPH \n"
+                    + "speed: " + kph.toString() + " KPH \n"
+                    + "heading: " + numberFormatter.format(event.heading.toString()) + "\n"
+                    + "horizontal accuracy: " + event.horizontalAccuracy.toString() + "\n"
+                    + "vertical accuracy: " + event.verticalAccuracy.toString();
+
+                currentLocation.lon = event.longitude;
+                currentLocation.lat = event.latitude;
+
+                if (!map.extent.contains(currentLocation))
+                {
+                    map.center = currentLocation;
+                }
+            }
+        ]]>
+    </fx:Script>
+
+    <fx:Declarations>
+        <!-- Place non-visual elements (e.g., services, value objects) here -->
+        <s:DateTimeFormatter id="dateFormatter" dateTimePattern="EEE h:mm:ss a z"/>
+        <s:NumberFormatter id="numberFormatter"
+                           fractionalDigits="2"
+                           trailingZeros="false"/>
+        <esri:Graphic id="gpsGraphic">
+            <esri:geometry>
+                <esri:WebMercatorMapPoint id="currentLocation"
+                                          lon="-116.538435" lat="33.824811"/>
+            </esri:geometry>
+            <esri:symbol>
+                <esri:PictureMarkerSymbol id="locationPMS"
+                                          width="20" height="20"
+                                          source="{location_blue_pin}"/>
+            </esri:symbol>
+        </esri:Graphic>
+
+    </fx:Declarations>
+
+    <s:Rect left="0" right="0" top="0" bottom="0">
+        <s:fill>
+            <s:LinearGradient x="200" y="0"
+                              rotation="90"
+                              scaleX="400">
+                <s:GradientEntry alpha="1"
+                                 color="#3e3e3e"
+                                 ratio="0"/>
+                <s:GradientEntry alpha="1"
+                                 color="#161616"
+                                 ratio="1"/>
+            </s:LinearGradient>
+        </s:fill>
+    </s:Rect>
+
+    <esri:Map id="map"
+              level="17"
+              load="map_loadHandler(event)"
+              zoomSliderVisible="false">
+        <esri:center>
+            <esri:WebMercatorMapPoint lon="-116.538435" lat="33.824811"/>
+        </esri:center>
+        <esri:ArcGISTiledMapServiceLayer id="worldTopoMap" load="worldTopoMap_loadHandler(event)"/>
+    </esri:Map>
+
+    <components:MobileNavigation left="20" top="20"
+                                 map="{map}"/>
+
+    <s:Group width="300" height="350"
+             right="20" top="20">
+        <s:Rect left="0" right="0" top="0" bottom="0"
+                radiusX="10"
+                radiusY="10">
+            <s:fill>
+                <s:LinearGradient x="200" y="0"
+                                  rotation="90"
+                                  scaleX="400">
+                    <s:GradientEntry alpha="1"
+                                     color="#3e3e3e"
+                                     ratio="0"/>
+                    <s:GradientEntry alpha="1"
+                                     color="#161616"
+                                     ratio="1"/>
+                </s:LinearGradient>
+            </s:fill>
+        </s:Rect>
+        <s:Label id="geolocationIsSupported"
+                 height="30"
+                 left="5" right="5" top="10"
+                 styleName="geolocationSupportedLabel"/>
+        <s:TextArea id="geolocationStatus"
+                    left="5" right="5" top="40" bottom="5"
+                    styleName="geolocationStatusLabel"/>
+    </s:Group>
+
+</s:View>
