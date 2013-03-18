@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+///////////////////////////////////////////////////////////////////////////
+// Copyright (c) 2008-2013 Esri. All Rights Reserved.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//    http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+///////////////////////////////////////////////////////////////////////////
+-->
+<s:Graphic xmlns:fx="http://ns.adobe.com/mxml/2009"
+           xmlns:s="library://ns.adobe.com/flex/spark"
+           width="76" height="236">
+
+    <fx:Script>
+        <![CDATA[
+            import com.esri.ags.Map;
+            //----------------------------------
+            //  map
+            //----------------------------------
+
+            private var m_map:Map;
+
+            [Bindable(event="mapChanged")]
+
+            /**
+             * The map reference.
+             */
+            public function get map():Map
+            {
+                return m_map;
+            }
+
+            /**
+             * @private
+             */
+            public function set map(value:Map):void
+            {
+                if (m_map)
+                {
+                    //remove any listeners
+                }
+                m_map = value;
+                if (m_map)
+                {
+                    //add any listeners
+                }
+                dispatchEvent(new Event("mapChanged"));
+            }
+
+            protected function zoomInGroup_clickHandler(event:MouseEvent):void
+            {
+                if (m_map)
+                {
+                    m_map.zoomIn();
+                }
+            }
+
+            protected function homeGroup_clickHandler(event:MouseEvent):void
+            {
+                if (m_map)
+                {
+                    m_map.zoomToInitialExtent();
+                }
+            }
+
+            protected function zoomOutGroup_clickHandler(event:MouseEvent):void
+            {
+                if (m_map)
+                {
+                    m_map.zoomOut();
+                }
+            }
+        ]]>
+    </fx:Script>
+
+    <fx:Declarations>
+        <!-- Place non-visual elements (e.g., services, value objects) here -->
+    </fx:Declarations>
+    <s:filters>
+        <s:DropShadowFilter alpha="0.65"
+                            angle="45"
+                            blurX="4"
+                            blurY="4"
+                            color="#000000"
+                            distance="7"
+                            quality="2"/>
+    </s:filters>
+    <s:Path alpha="1"
+            blendMode="normal"
+            data="M 2 22 C 2 13 10 5 20 5 C 20 5 56 5 56 5 C 66 5 74 13 74 22 C 74 22 74 214 74 214 C 74 223 66 231 56 231 C 56 231 20 231 20 231 C 10 231 2 223 2 214 C 2 214 2 22 2 22 Z "
+            winding="evenOdd">
+        <s:fill>
+            <s:LinearGradient x="38" y="5"
+                              rotation="90"
+                              scaleX="226">
+                <s:GradientEntry alpha="1"
+                                 color="#3e3e3e"
+                                 ratio="0"/>
+                <s:GradientEntry alpha="1"
+                                 color="#161616"
+                                 ratio="1"/>
+            </s:LinearGradient>
+        </s:fill>
+        <s:stroke>
+            <s:SolidColorStroke caps="none"
+                                color="#bbbbbb"
+                                weight="2"/>
+        </s:stroke>
+    </s:Path>
+
+    <s:Rect x="3" y="154" width="70" height="5"
+            alpha="1"
+            blendMode="normal"
+            radiusX="0"
+            radiusY="0">
+        <s:fill>
+            <s:SolidColor color="#b0b0b0"/>
+        </s:fill>
+    </s:Rect>
+    <s:Rect x="3" y="77" width="70" height="5"
+            alpha="1"
+            blendMode="normal"
+            radiusX="0"
+            radiusY="0">
+        <s:fill>
+            <s:SolidColor color="#b0b0b0"/>
+        </s:fill>
+    </s:Rect>
+
+    <!-- Plus -->
+    <s:Group id="zoomInGroup"
+             x="37.5" y="43"
+             alpha="1"
+             blendMode="normal"
+             click="zoomInGroup_clickHandler(event)">
+        <s:Path alpha="1"
+                blendMode="normal"
+                data="M -6 25 L 6 25 L 6 6 L 25 6 L 25 -6 L 6 -6 L 6 -25 L -6 -25 L -6 -6 L -25 -6 L -25 6 L -6 6 L -6 25 Z "
+                winding="evenOdd">
+            <s:fill>
+                <s:SolidColor color="#bbbbbb"/>
+            </s:fill>
+        </s:Path>
+    </s:Group>
+    <!-- Home -->
+    <s:Group id="homeGroup"
+             x="38.5" y="118"
+             alpha="1"
+             blendMode="normal"
+             click="homeGroup_clickHandler(event)">
+        <s:Path alpha="1"
+                blendMode="normal"
+                data="M 22 31 L 22 2 L 31 2 L 0 -31 L -9 -21 L -9 -25 L -17 -25 L -17 -12 L -30 2 L -21 2 L -21 31 L 1 31 L 1 15 L 14 15 L 14 31 L 22 31 L 22 31 Z M -15 5 L -6 5 L -6 12 L -15 12 L -15 5 Z "
+                winding="evenOdd">
+            <s:fill>
+                <s:SolidColor color="#bbbbbb"/>
+            </s:fill>
+        </s:Path>
+    </s:Group>
+    <!-- Minus -->
+    <s:Group id="zoomOutGroup"
+             x="37.5" y="198.5"
+             alpha="1"
+             blendMode="normal"
+             click="zoomOutGroup_clickHandler(event)">
+        <s:Path alpha="1"
+                blendMode="normal"
+                data="M -25 -6 L -25 6 L 25 6 L 25 -6 L -25 -6 Z "
+                winding="evenOdd">
+            <s:fill>
+                <s:SolidColor color="#bbbbbb"/>
+            </s:fill>
+        </s:Path>
+    </s:Group>
+</s:Graphic>
