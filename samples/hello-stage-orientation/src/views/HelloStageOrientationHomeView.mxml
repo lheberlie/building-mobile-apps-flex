@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+///////////////////////////////////////////////////////////////////////////
+// Copyright (c) 2008-2013 Esri. All Rights Reserved.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//    http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+///////////////////////////////////////////////////////////////////////////
+-->
+<s:View xmlns:fx="http://ns.adobe.com/mxml/2009"
+        xmlns:s="library://ns.adobe.com/flex/spark"
+        actionBarVisible="false"
+        resize="application_resizeHandler(event)"
+        viewActivate="view_viewActivateHandler(event)"
+        viewDeactivate="view_viewDeactivateHandler(event)">
+
+    <s:states>
+        <s:State name="portrait"/>
+        <s:State name="landscape"/>
+    </s:states>
+
+    <fx:Script>
+        <![CDATA[
+            import mx.events.ResizeEvent;
+
+            import spark.events.ViewNavigatorEvent;
+
+            protected function view_viewActivateHandler(event:ViewNavigatorEvent):void
+            {
+                stage.scaleMode = StageScaleMode.NO_SCALE;
+                stage.addEventListener(StageOrientationEvent.ORIENTATION_CHANGE, orientationChangeHandler, false, 0, true);
+                stage.orientation == StageOrientation.DEFAULT ? stage.setOrientation(StageOrientation.ROTATED_LEFT) : stage.setOrientation(StageOrientation.DEFAULT);
+            }
+
+            protected function view_viewDeactivateHandler(event:ViewNavigatorEvent):void
+            {
+                stage.removeEventListener(StageOrientationEvent.ORIENTATION_CHANGE, orientationChangeHandler);
+            }
+
+            protected function orientationChangeHandler(event:StageOrientationEvent):void
+            {
+                var orientationText:String = this.currentState + ":";
+                switch (event.afterOrientation)
+                {
+                    case StageOrientation.DEFAULT:
+                    {
+                        orientationText += "Default";
+                        break;
+                    }
+                    case StageOrientation.ROTATED_RIGHT:
+                    {
+                        orientationText += "RotatedRight";
+                        break;
+                    }
+                    case StageOrientation.ROTATED_LEFT:
+                    {
+                        orientationText += "RotatedLeft";
+                        break;
+                    }
+                    case StageOrientation.UPSIDE_DOWN:
+                    {
+                        orientationText += "UpsideDown";
+                        break;
+                    }
+                    case StageOrientation.UNKNOWN:
+                    {
+                        orientationText += "Unknown";
+                        break;
+                    }
+                }
+                helloStageOrientation.text = orientationText;
+            }
+
+            protected function application_resizeHandler(event:ResizeEvent):void
+            {
+                if (width > height)
+                {
+                    this.currentState = "landscape";
+                }
+                else
+                {
+                    this.currentState = "portrait";
+                }
+            }
+        ]]>
+    </fx:Script>
+
+    <fx:Declarations>
+        <!-- Place non-visual elements (e.g., services, value objects) here -->
+    </fx:Declarations>
+    <s:Rect left="0" right="0" top="0" bottom="0">
+        <s:fill>
+            <s:LinearGradient x="200" y="0"
+                              rotation="90"
+                              scaleX="400">
+                <s:GradientEntry alpha="1"
+                                 color="#3e3e3e"
+                                 ratio="0"/>
+                <s:GradientEntry alpha="1"
+                                 color="#161616"
+                                 ratio="1"/>
+            </s:LinearGradient>
+        </s:fill>
+    </s:Rect>
+
+    <s:Rect width.landscape="800" width.portrait="100" height.landscape="100" height.portrait="400"
+            top.landscape="100" top.portrait="50"
+            horizontalCenter="0">
+        <s:fill>
+            <s:LinearGradient x="200" y="0"
+                              rotation.landscape="0"
+                              rotation.portrait="90"
+                              scaleX="400">
+                <s:GradientEntry alpha="1"
+                                 color="#808080"
+                                 ratio="0"/>
+                <s:GradientEntry alpha="1"
+                                 color="#CCCCCC"
+                                 ratio="1"/>
+            </s:LinearGradient>
+        </s:fill>
+    </s:Rect>
+
+    <s:Label id="helloStageOrientation"
+             horizontalCenter="0"
+             styleName="helloStageOrientationLabel"
+             text="Hello Stage Orientation!"
+             verticalCenter="0"/>
+
+    <s:BusyIndicator left.portrait="20" right.landscape="20" top.portrait="20" bottom.landscape="20"/>
+</s:View>
