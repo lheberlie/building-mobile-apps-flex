@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+///////////////////////////////////////////////////////////////////////////
+// Copyright (c) 2010-2013 Esri. All Rights Reserved.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//    http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+///////////////////////////////////////////////////////////////////////////
+-->
+<s:View xmlns:fx="http://ns.adobe.com/mxml/2009"
+        xmlns:s="library://ns.adobe.com/flex/spark"
+        xmlns:esri="http://www.esri.com/2008/ags"
+        xmlns:components="com.github.lheberlie.components.*"
+        actionBarVisible="false"
+        backgroundAlpha="0"
+        creationComplete="helloTPKMapView_creationCompleteHandler(event)"
+        initialize="helloTPKMapView_initializeHandler(event)"
+        viewActivate="helloTPKMapView_viewActivateHandler(event)">
+
+    <fx:Script>
+        <![CDATA[
+            import com.esri.ags.events.ExtentEvent;
+            import com.esri.ags.events.LayerEvent;
+            import com.esri.ags.events.MapEvent;
+
+            import mx.collections.ArrayCollection;
+            import mx.events.FlexEvent;
+
+            import spark.events.ViewNavigatorEvent;
+            [Bindable]
+            private var baseMapTPKFile:File;
+            private var platform:String;
+
+            [Bindable]
+            private var lifeCycleArrayCollection:ArrayCollection = new ArrayCollection();
+
+            protected function helloTPKMapView_initializeHandler(event:FlexEvent):void
+            {
+                lifeCycleArrayCollection.addItem("View Initialized");
+                var versionString:String = Capabilities.version;
+                var pattern:RegExp = /^(\w*) (\d*),(\d*),(\d*),(\d*)$/;
+                var result:Object = pattern.exec(versionString);
+                if (result != null)
+                {
+                    /*
+                    trace("input: " + result.input);
+                    trace("platform: " + result[1]);
+                    trace("majorVersion: " + result[2]);
+                    trace("minorVersion: " + result[3]);
+                    trace("buildNumber: " + result[4]);
+                    trace("internalBuildNumber: " + result[5]);
+                    */
+                    platform = result[1];
+                }
+                else
+                {
+                    trace("Unable to match RegExp.");
+                }
+
+                if (platform == "IOS")
+                {
+                    var documentsDir:String = File.documentsDirectory.url;
+                    var tpkFileString:String = documentsDir + "/BaseMap.tpk";
+                    // If you inspect the app inside of XCode's Organizer you can see the "Documents" folder in the "Data files in Sandbox"
+                    // example: file:///var/mobile/Applications/BBC56080-AC4F-44B7-9B37-B3BF776523F0/Documents/BaseMap.tpk
+                    var tpkFile:File = File.documentsDirectory.resolvePath(tpkFileString);
+                    /*
+                     *  If someone has copied a file named BaseMap.tpk into the documents directory
+                     *  through iTunes then use that tpk instead of the one that we include in the
+                     *  assets/tpk folder.
+                    */
+                    if (tpkFile.exists)
+                    {
+                        baseMapTPKFile = File.documentsDirectory.resolvePath(tpkFileString);
+                        tpkFile = null;
+                    }
+                    else
+                    {
+                        baseMapTPKFile = File.applicationDirectory.resolvePath("assets/tpk/MediumScalesNew.tpk");
+                    }
+                }
+                else if (platform == "AND")
+                {
+                    //TODO: need to fix/add condition for Android
+                    //LH: I don't have any Android devices so I couldn't test this.
+                    var file:String = File.applicationDirectory.url;
+                    baseMapTPKFile = File.applicationDirectory.resolvePath("assets/tpk/MediumScalesNew.tpk");
+                }
+
+            }
+
+            protected function helloTPKMapView_creationCompleteHandler(event:FlexEvent):void
+            {
+                lifeCycleArrayCollection.addItem("View Creation Complete");
+            }
+
+            protected function helloTPKMapView_viewActivateHandler(event:ViewNavigatorEvent):void
+            {
+                lifeCycleArrayCollection.addItem("View Activated");
+                helloWorldLabel.visible = false;
+            }
+
+            protected function map_loadHandler(event:MapEvent):void
+            {
+                lifeCycleArrayCollection.addItem("Map loaded");
+            }
+
+            protected function basemapLocalTiledLayer_loadHandler(event:LayerEvent):void
+            {
+                lifeCycleArrayCollection.addItem("BaseMap loaded");
+            }
+
+            protected function map_extentChangeHandler(event:ExtentEvent):void
+            {
+                mapScale.text = "1:" + numberFormatter.format(map.scale);
+            }
+        ]]>
+    </fx:Script>
+
+    <fx:Declarations>
+        <!-- Place non-visual elements (e.g., services, value objects) here -->
+        <s:NumberFormatter id="numberFormatter"
+                           fractionalDigits="0"
+                           trailingZeros="false"/>
+    </fx:Declarations>
+
+    <s:Rect left="0" right="0" top="0" bottom="0">
+        <s:fill>
+            <s:LinearGradient x="200" y="0"
+                              rotation="90"
+                              scaleX="400">
+                <s:GradientEntry alpha="1"
+                                 color="#3e3e3e"
+                                 ratio="0"/>
+                <s:GradientEntry alpha="1"
+                                 color="#161616"
+                                 ratio="1"/>
+            </s:LinearGradient>
+        </s:fill>
+    </s:Rect>
+
+    <esri:Map id="map"
+              extentChange="map_extentChangeHandler(event)"
+              load="map_loadHandler(event)">
+        <esri:extent>
+            <esri:Extent xmin="-13681256" ymin="5690340" xmax="-13630043" ymax="5717169">
+                <esri:SpatialReference wkid="102100"/>
+            </esri:Extent>
+        </esri:extent>
+        <esri:ArcGISLocalTiledLayer id="basemapLocalTiledLayer"
+                                    file="{baseMapTPKFile}"
+                                    load="basemapLocalTiledLayer_loadHandler(event)"/>
+    </esri:Map>
+
+    <s:Label id="helloWorldLabel"
+             horizontalCenter="0"
+             styleName="helloWorldMapLabel"
+             text="Hello World!"
+             verticalCenter="0"/>
+
+    <s:Label id="mapScale"
+             left="20" bottom="50"/>
+
+    <components:MobileNavigation left="20" top="20"
+                                 map="{map}"/>
+
+    <s:Group width="300" height="300"
+             right="20" top="20">
+        <s:Rect left="0" right="0" top="0" bottom="0"
+                radiusX="10"
+                radiusY="10">
+            <s:fill>
+                <s:LinearGradient x="200" y="0"
+                                  rotation="90"
+                                  scaleX="400">
+                    <s:GradientEntry alpha="1"
+                                     color="#3e3e3e"
+                                     ratio="0"/>
+                    <s:GradientEntry alpha="1"
+                                     color="#161616"
+                                     ratio="1"/>
+                </s:LinearGradient>
+            </s:fill>
+        </s:Rect>
+        <s:Label height="30"
+                 left="5" right="5" top="5"
+                 styleName="lifeCycleListHeaderLabel"
+                 text="Life-cycle events"/>
+        <s:List left="5" right="5" top="40" bottom="5"
+                dataProvider="{lifeCycleArrayCollection}"
+                itemRenderer="spark.components.LabelItemRenderer"
+                typicalItem="View Creation Complete"/>
+    </s:Group>
+
+</s:View>
