@@ -1,24 +1,18 @@
 # building-mobile-apps-flex
 <!-- short description -->
-This is the source code, samples, and documentation from the [Esri Developer Summit](http://www.esri.com/devsummit) Technical Workshop Session - [Building Mobile Web Applications with the ArcGIS API for Flex](http://www.esri.com)
+This is the source code, samples, and documentation from the [Esri Developer Summit](http://www.esri.com/devsummit) Technical Workshop Session - [Building Mobile Web Applications with the ArcGIS API for Flex][1]
 
 <!-- long description -->
 * In this session we show you how easy it is to use Flex to deploy native mobile mapping applications on iPhone and Android. We’ll cover considerations for mobile versus web development. And, explore topics such as map performance, events, multiple views as well as handling gesture, orientation changes and we’ll also cover debugging tips.
 
 <!-- thumbnail with hyperlink -->
-[![Screenshot](https://github.com/Esri/ds2013-mobile-flex/tree/develop/ds2013-mobile-flex.png "Screenshot")](http://www.esri.com)
+[![Screenshot](../../wiki/assets/building-mobile-apps-flex.png "Screenshot")](../../wiki)
 
 <!-- repository description -->
 This repository includes:
 
-
-* The ... source code.
+* The source code from the samples and apps demonstrated in the Technical Workshop.
 * Read the [Documentation](../../wiki) for getting started using this repository.
-
-## Features
-
-## Instructions
-
 
 ## Requirements
 * Knowledge of Flex development.
@@ -31,6 +25,7 @@ This repository includes:
 * [ArcGIS Blog](http://blogs.esri.com/esri/arcgis/tag/flex/)
 * [@agup](http://twitter.com/agup)
 * [@lheberlie](http://twitter.com/lheberlie)
+* [@yanncabon](http://twitter.com/yanncabon)
 
 ## Issues
 
@@ -55,3 +50,5 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 A copy of the license is available in the repository's [license.txt]( https://raw.github.com/Esri/arcgis-viewer-flex/master/license.txt) file.
+
+[1]: http://events.esri.com/bpc/2013/dev_agenda/index.cfm?fa=Session_Detail_Form&SessionId=132&ScheduleId=236
