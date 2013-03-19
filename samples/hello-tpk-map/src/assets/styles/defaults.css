@@ -34,6 +34,15 @@
         fontFamily: "AvenirNext Bold";
         fontSize: 42;
     }
+    .mapScaleLabel
+    {
+        color: #2D2D2D;
+        fontFamily: "AvenirNext Bold";
+        fontSize: 22;
+        fontWeight: bold;
+        textAlign: center;
+        verticalAlign: justify;
+    }
     s|LabelItemRenderer
     {
         color: #2D2D2D;
@@ -56,6 +65,15 @@
         color: #BBBBBB;
         fontFamily: "Roboto Regular";
         fontSize: 42;
+    }
+    .mapScaleLabel
+    {
+        color: #2D2D2D;
+        fontFamily: "Roboto Regular";
+        fontSize: 22;
+        fontWeight: bold;
+        textAlign: center;
+        verticalAlign: justify;
     }
     s|LabelItemRenderer
     {
