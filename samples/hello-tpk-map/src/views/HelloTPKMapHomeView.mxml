@@ -46,6 +46,7 @@
             protected function helloTPKMapView_initializeHandler(event:FlexEvent):void
             {
                 lifeCycleArrayCollection.addItem("View Initialized");
+                //IOS 11,6,602,167
                 var versionString:String = Capabilities.version;
                 var pattern:RegExp = /^(\w*) (\d*),(\d*),(\d*),(\d*)$/;
                 var result:Object = pattern.exec(versionString);
@@ -68,24 +69,24 @@
 
                 if (platform == "IOS")
                 {
-                    var documentsDir:String = File.documentsDirectory.url;
-                    var tpkFileString:String = documentsDir + "/BaseMap.tpk";
-                    // If you inspect the app inside of XCode's Organizer you can see the "Documents" folder in the "Data files in Sandbox"
-                    // example: file:///var/mobile/Applications/BBC56080-AC4F-44B7-9B37-B3BF776523F0/Documents/BaseMap.tpk
-                    var tpkFile:File = File.documentsDirectory.resolvePath(tpkFileString);
                     /*
                      *  If someone has copied a file named BaseMap.tpk into the documents directory
                      *  through iTunes then use that tpk instead of the one that we include in the
                      *  assets/tpk folder.
                     */
-                    if (tpkFile.exists)
+                    // If you inspect the app inside of XCode's Organizer you can see the "Documents" folder in the "Data files in Sandbox"
+                    // example: file:///var/mobile/Applications/BBC56080-AC4F-44B7-9B37-B3BF776523F0/Documents/BaseMap.tpk
+                    baseMapTPKFile = File.documentsDirectory.resolvePath("BaseMap.tpk");
+                    if (!baseMapTPKFile.exists)
                     {
-                        baseMapTPKFile = File.documentsDirectory.resolvePath(tpkFileString);
-                        tpkFile = null;
+                        trace("BaseMap.tpk was not found in the Documents directory");
+                        baseMapTPKFile = File.applicationDirectory.resolvePath("assets/tpk/World.tpk");
                     }
                     else
                     {
-                        baseMapTPKFile = File.applicationDirectory.resolvePath("assets/tpk/MediumScalesNew.tpk");
+                        trace("basemapTPKFile.exists: " + baseMapTPKFile.exists);
+                        trace("basemapTPKFile.nativePath: " + baseMapTPKFile.nativePath);
+                        trace("basemapTPKFile.url: " + baseMapTPKFile.url);
                     }
                 }
                 else if (platform == "AND")
@@ -93,9 +94,8 @@
                     //TODO: need to fix/add condition for Android
                     //LH: I don't have any Android devices so I couldn't test this.
                     var file:String = File.applicationDirectory.url;
-                    baseMapTPKFile = File.applicationDirectory.resolvePath("assets/tpk/MediumScalesNew.tpk");
+                    baseMapTPKFile = File.applicationDirectory.resolvePath("assets/tpk/World.tpk");
                 }
-
             }
 
             protected function helloTPKMapView_creationCompleteHandler(event:FlexEvent):void
@@ -112,16 +112,29 @@
             protected function map_loadHandler(event:MapEvent):void
             {
                 lifeCycleArrayCollection.addItem("Map loaded");
+                trace("basemapLocalTiledLayer.loaded: " + basemapLocalTiledLayer.loaded);
             }
 
             protected function basemapLocalTiledLayer_loadHandler(event:LayerEvent):void
             {
                 lifeCycleArrayCollection.addItem("BaseMap loaded");
+                map.extent = basemapLocalTiledLayer.initialExtent;
             }
 
             protected function map_extentChangeHandler(event:ExtentEvent):void
             {
                 mapScale.text = "1:" + numberFormatter.format(map.scale);
+            }
+
+            protected function map_creationCompleteHandler(event:FlexEvent):void
+            {
+                lifeCycleArrayCollection.addItem("map creation complete");
+            }
+
+            protected function basemapLocalTiledLayer_loadErrorHandler(event:LayerEvent):void
+            {
+                lifeCycleArrayCollection.addItem("BaseMap load error!");
+                trace(event.fault.faultString);
             }
         ]]>
     </fx:Script>
@@ -149,16 +162,14 @@
     </s:Rect>
 
     <esri:Map id="map"
+              creationComplete="map_creationCompleteHandler(event)"
               extentChange="map_extentChangeHandler(event)"
-              load="map_loadHandler(event)">
-        <esri:extent>
-            <esri:Extent xmin="-13681256" ymin="5690340" xmax="-13630043" ymax="5717169">
-                <esri:SpatialReference wkid="102100"/>
-            </esri:Extent>
-        </esri:extent>
+              load="map_loadHandler(event)"
+              zoomSliderVisible="false">
         <esri:ArcGISLocalTiledLayer id="basemapLocalTiledLayer"
                                     file="{baseMapTPKFile}"
-                                    load="basemapLocalTiledLayer_loadHandler(event)"/>
+                                    load="basemapLocalTiledLayer_loadHandler(event)"
+                                    loadError="basemapLocalTiledLayer_loadErrorHandler(event)"/>
     </esri:Map>
 
     <s:Label id="helloWorldLabel"
@@ -168,7 +179,8 @@
              verticalCenter="0"/>
 
     <s:Label id="mapScale"
-             left="20" bottom="50"/>
+             left="20" bottom="50"
+             styleName="mapScaleLabel"/>
 
     <components:MobileNavigation left="20" top="20"
                                  map="{map}"/>
