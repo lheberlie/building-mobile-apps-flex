@@ -20,9 +20,11 @@
         xmlns:s="library://ns.adobe.com/flex/spark"
         actionBarVisible="false"
         title="Hello World!">
+
     <fx:Declarations>
         <!-- Place non-visual elements (e.g., services, value objects) here -->
     </fx:Declarations>
+
     <s:Rect left="0" right="0" top="0" bottom="0">
         <s:fill>
             <s:LinearGradient x="200" y="0"
@@ -37,10 +39,12 @@
             </s:LinearGradient>
         </s:fill>
     </s:Rect>
+
     <s:Label color="#BBBBBB"
-             fontFamily="Source Sans Pro"
-             fontSize="42"
+             fontFamily="Avenir Next Oblique"
+             fontSize="70"
              horizontalCenter="0"
              text="Hello World!"
              verticalCenter="0"/>
+
 </s:View>
