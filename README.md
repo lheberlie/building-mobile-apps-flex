@@ -1,9 +1,9 @@
 # building-mobile-apps-flex
 <!-- short description -->
-This is the source code, samples, and documentation from the [Esri Developer Summit](http://www.esri.com/devsummit) Technical Workshop Session - [Building Mobile Web Applications with the ArcGIS API for Flex][1]
+This is the source code, samples, and documentation from the [Esri Developer Summit](http://www.esri.com/devsummit) Technical Workshop Session - [Building Mobile Applications with the ArcGIS API for Flex][1]
 
 <!-- long description -->
-* In this session we show you how easy it is to use Flex to deploy native mobile mapping applications on iPhone and Android. We’ll cover considerations for mobile versus web development. And, explore topics such as map performance, events, multiple views as well as handling gesture, orientation changes and we’ll also cover debugging tips.
+* In this session we show you how easy it is to use Flex to deploy native mobile mapping applications on Apple iOS and Google Android. We’ll cover considerations for mobile versus web development. And, explore topics such as map performance, events, multiple views as well as handling gesture, orientation changes and we’ll also cover debugging tips.
 
 <!-- thumbnail with hyperlink -->
 [![Screenshot](../../wiki/assets/building-mobile-apps-flex.png "Screenshot")](../../wiki)
