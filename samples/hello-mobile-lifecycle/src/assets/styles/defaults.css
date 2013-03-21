@@ -28,12 +28,6 @@
         textAlign: center;
         verticalAlign: justify;
     }
-    .helloWorldMapLabel
-    {
-        color: #BBBBBB;
-        fontFamily: "AvenirNext Bold";
-        fontSize: 42;
-    }
     s|LabelItemRenderer
     {
         color: #2D2D2D;
@@ -50,12 +44,6 @@
         fontSize: 22;
         textAlign: center;
         verticalAlign: justify;
-    }
-    .helloWorldMapLabel
-    {
-        color: #BBBBBB;
-        fontFamily: "Roboto Regular";
-        fontSize: 42;
     }
     s|LabelItemRenderer
     {
