@@ -43,27 +43,33 @@
             protected function helloWorldMapView_initializeHandler(event:FlexEvent):void
             {
                 lifeCycleArrayCollection.addItem("View Initialized");
+                trace("")
             }
 
             protected function helloWorldMapView_creationCompleteHandler(event:FlexEvent):void
             {
                 lifeCycleArrayCollection.addItem("View Creation Complete");
+                trace("")
             }
 
             protected function helloWorldMapView_viewActivateHandler(event:ViewNavigatorEvent):void
             {
                 lifeCycleArrayCollection.addItem("View Activated");
+                trace("")
                 helloWorldLabel.visible = false;
+                lifeCycleArrayCollection.source.reverse();
             }
 
             protected function map_loadHandler(event:MapEvent):void
             {
                 lifeCycleArrayCollection.addItem("Map loaded");
+                trace("")
             }
 
             protected function worldTopoMap_loadHandler(event:LayerEvent):void
             {
                 lifeCycleArrayCollection.addItem("BaseMap loaded");
+                trace("")
             }
         ]]>
     </fx:Script>
