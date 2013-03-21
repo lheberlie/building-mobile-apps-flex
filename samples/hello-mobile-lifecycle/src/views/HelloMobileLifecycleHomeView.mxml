@@ -22,17 +22,20 @@
         xmlns:components="com.github.lheberlie.components.*"
         actionBarVisible="false"
         backgroundAlpha="0"
-        creationComplete="helloWorldMapView_creationCompleteHandler(event)"
-        initialize="helloWorldMapView_initializeHandler(event)"
-        title="Hello World!"
-        viewActivate="helloWorldMapView_viewActivateHandler(event)">
+        creationComplete="view_creationCompleteHandler(event)"
+        initialize="view_initializeHandler(event)"
+        viewActivate="view_viewActivateHandler(event)"
+        viewDeactivate="view_viewDeactivateHandler(event)">
 
     <fx:Script>
         <![CDATA[
             import com.esri.ags.events.LayerEvent;
             import com.esri.ags.events.MapEvent;
 
+            import mx.binding.utils.ChangeWatcher;
             import mx.collections.ArrayCollection;
+            import mx.events.CollectionEvent;
+            import mx.events.CollectionEventKind;
             import mx.events.FlexEvent;
 
             import spark.events.ViewNavigatorEvent;
@@ -40,30 +43,42 @@
             [Bindable]
             private var lifeCycleArrayCollection:ArrayCollection = new ArrayCollection();
 
-            protected function helloWorldMapView_initializeHandler(event:FlexEvent):void
+
+            protected function view_initializeHandler(event:FlexEvent):void
             {
                 lifeCycleArrayCollection.addItem("View Initialized");
+                trace("View Initialized");
             }
 
-            protected function helloWorldMapView_creationCompleteHandler(event:FlexEvent):void
+            protected function view_creationCompleteHandler(event:FlexEvent):void
             {
                 lifeCycleArrayCollection.addItem("View Creation Complete");
+                trace("View Creation Complete");
             }
 
-            protected function helloWorldMapView_viewActivateHandler(event:ViewNavigatorEvent):void
+            protected function view_viewActivateHandler(event:ViewNavigatorEvent):void
             {
                 lifeCycleArrayCollection.addItem("View Activated");
-                helloWorldLabel.visible = false;
+                trace("View Activated");
+
             }
 
             protected function map_loadHandler(event:MapEvent):void
             {
                 lifeCycleArrayCollection.addItem("Map loaded");
+                trace("Map loaded:Basemap loaded?" + worldTopoMap.loaded);
             }
 
             protected function worldTopoMap_loadHandler(event:LayerEvent):void
             {
                 lifeCycleArrayCollection.addItem("BaseMap loaded");
+                trace("BaseMap loaded:Map loaded?" + map.loaded);
+            }
+
+            protected function view_viewDeactivateHandler(event:ViewNavigatorEvent):void
+            {
+                //lifeCycleArrayCollection.addItem("View DeActivated");
+                trace("View DeActivated");
             }
         ]]>
     </fx:Script>
@@ -97,12 +112,6 @@
         <esri:ArcGISTiledMapServiceLayer id="worldTopoMap" load="worldTopoMap_loadHandler(event)"/>
     </esri:Map>
 
-    <s:Label id="helloWorldLabel"
-             horizontalCenter="0"
-             styleName="helloWorldMapLabel"
-             text="Hello World!"
-             verticalCenter="0"/>
-
     <components:MobileNavigation left="20" top="20"
                                  map="{map}"/>
 
@@ -124,10 +133,12 @@
                 </s:LinearGradient>
             </s:fill>
         </s:Rect>
+
         <s:Label height="30"
                  left="5" right="5" top="5"
                  styleName="lifeCycleListHeaderLabel"
                  text="Life-cycle events"/>
+
         <s:List left="5" right="5" top="40" bottom="5"
                 dataProvider="{lifeCycleArrayCollection}"
                 itemRenderer="spark.components.LabelItemRenderer"

@@ -18,12 +18,28 @@
 -->
 <s:ViewNavigatorApplication xmlns:fx="http://ns.adobe.com/mxml/2009"
                             xmlns:s="library://ns.adobe.com/flex/spark"
+                            activate="viewnavigatorapplication1_activateHandler(event)"
                             backgroundColor="#161616"
-                            firstView="views.HelloWorldMapHomeView"
+                            deactivate="viewnavigatorapplication1_deactivateHandler(event)"
+                            firstView="views.HelloMobileLifecycleHomeView"
                             preloader="com.github.lheberlie.preloaders.MultiDPISplashScreen"
                             splashScreenMinimumDisplayTime="1500">
 
     <fx:Style source="assets/styles/defaults.css"/>
+
+    <fx:Script>
+        <![CDATA[
+            protected function viewnavigatorapplication1_deactivateHandler(event:Event):void
+            {
+                trace("app deactivated");
+            }
+
+            protected function viewnavigatorapplication1_activateHandler(event:Event):void
+            {
+                trace("app activated");
+            }
+        ]]>
+    </fx:Script>
 
     <fx:Declarations>
         <!-- Place non-visual elements (e.g., services, value objects) here -->
