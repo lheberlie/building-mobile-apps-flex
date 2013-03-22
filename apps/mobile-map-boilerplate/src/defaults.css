@@ -1,0 +1,409 @@
+/*
+///////////////////////////////////////////////////////////////////////////
+// Copyright (c) 2013 Esri. All Rights Reserved.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//    http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+///////////////////////////////////////////////////////////////////////////
+*/
+
+@namespace "library://ns.adobe.com/flex/spark";
+@namespace components "com.esri.mobile.components.*";
+@namespace esri "http://www.esri.com/2008/ags";
+@namespace supportClasses "com.esri.mobile.skins.mobile.supportClasses.*";
+
+/*--------------------------------------------------------------------------
+*
+*                                Customization
+*
+*--------------------------------------------------------------------------*/
+
+/*----------------------------------
+	Color schemes
+----------------------------------*/
+
+global
+{
+    downColor: #33B5E5;
+    downAlpha: 0.8;
+    chromeColor: #2d2d2d;
+    horizontalSeperatorColor: #5AC2E9;
+    selectionColor: #5AC2E9;
+    focusThickness: 0;
+    
+    fontFamily: Roboto;
+    
+    modalTransparency: 0.65;
+    modalTransparencyColor: #000000;
+    modalTransparencyBlur: 0;
+}
+
+/*----------------------------------
+	Icons
+----------------------------------*/
+
+.overflow
+{
+    icon: Embed(source="com/esri/mobile/skins/mobile160/assets/ic_action_overflow.png");
+}
+
+.add
+{
+    icon: Embed(source="com/esri/mobile/skins/mobile160/assets/5_content_new_light.png");
+}
+
+
+/*--------------------------------------------------------------------------
+*
+*                          ESRI components
+*
+*--------------------------------------------------------------------------*/
+
+/*----------------------------------
+	ResponsiveViewNavigator
+----------------------------------*/
+
+components|ResponsiveViewNavigator
+{
+    skinClass:ClassReference("com.esri.mobile.skins.mobile.ResponsiveViewNavigatorSkin");
+}
+components|ResponsiveViewNavigator #tabletViewNavigator
+{
+    dropShadowVisible: true;
+}
+
+/*----------------------------------
+	ResponsiveViewNavigator
+----------------------------------*/
+
+components|ResponsiveViewNavigatorApplication
+{
+    skinClass: ClassReference("com.esri.mobile.skins.mobile.ResponsiveViewNavigatorApplicationSkin");
+}
+
+/*----------------------------------
+	PopUpCallout
+----------------------------------*/
+
+components|PopUpCallout
+{
+    skinClass: ClassReference("com.esri.mobile.skins.mobile.CalloutSkin");
+}
+components|PopUpCallout ViewNavigator ActionBar
+{
+    chromeColor: #FFFFFF;
+}
+components|PopUpCallout ViewNavigator ActionBar #titleDisplay
+{
+    color: #33B5E5;
+    textShadowAlpha: 0;
+}
+
+/*----------------------------------
+	AttributeInspector
+----------------------------------*/
+
+esri|AttributeInspector
+{
+    skinClass: ClassReference("com.esri.mobile.skins.mobile.AttributeInspectorSkin");
+}
+esri|AttributeInspector TextInput, esri|AttributeInspector TextArea
+{
+    contentBackgroundAppearance: inset;
+    contentBackgroundAlpha: 1.0;
+    contentBackgroundColor: #F3F3F3;
+}
+supportClasses|AttributeInspectorRenderer .subLabel
+{
+    /*fontSize: 11pt;
+    fontWeight: bold;*/
+    color: #808080;
+}
+
+/*----------------------------------
+	Directions
+----------------------------------*/
+
+esri|Directions
+{
+    skinClass: ClassReference("com.esri.mobile.skins.mobile.DirectionsSkin");
+}
+esri|Directions DataGroup
+{
+    contentBackgroundAlpha: 0;
+}
+esri|Directions #totalDistanceLabelDisplay, esri|Directions #totalTimeLabelDisplay
+{
+    textAlign: center;
+    verticalAlign: middle;
+    fontSize: 26;
+    fontWeight: bold;
+}
+esri|DirectionsStop
+{
+    skinClass: ClassReference("com.esri.mobile.skins.mobile.DirectionsStopSkin");
+}
+components|DirectionsDataGroupRenderer
+{
+    borderColor: #CCCCCC;
+    borderAlpha: 0.5;
+}
+components|DirectionsDataGroupRenderer .subLabel
+{
+    textAlign: right;
+    color: #CCCCCC;
+    fontSize: 12;
+}
+
+/*----------------------------------
+	DropDownList
+----------------------------------*/
+
+components|DropDownList
+{
+    skinClass: ClassReference("com.esri.mobile.skins.mobile.DropDownListSkin");
+}
+components|DropDownList CalloutButton#calloutButton
+{
+    fontWeight: normal;
+    skinClass: ClassReference("com.esri.mobile.skins.mobile.DropDownListCalloutButtonSkin");
+}
+Callout.dropDownList, Callout.popUp
+{
+    skinClass: ClassReference("com.esri.mobile.skins.mobile.CalloutSkin");
+    backgroundColor: #282828;
+    color: #D4D4D4;
+    contentBackgroundAppearance: none;
+    contentBackgroundAlpha: 0;
+}
+Callout.dropDownList List
+{
+    skinClass: ClassReference("com.esri.mobile.skins.mobile.supportClasses.CalloutListSkin");
+}
+List
+{
+    contentBackgroundColor: #FFFFFF;
+    skinClass: ClassReference("com.esri.mobile.skins.mobile.supportClasses.CalloutListSkin");
+}
+
+/*----------------------------------
+	Geocoder
+----------------------------------*/
+
+esri|Geocoder
+{
+    skinClass: ClassReference("com.esri.mobile.skins.mobile.GeocoderSkin");
+}
+esri|Geocoder ButtonBase#clearButton
+{
+    skinClass: ClassReference("com.esri.mobile.skins.mobile.GeocoderRemoveButtonSkin");
+}
+
+/*----------------------------------
+	HorizontalPagingList
+----------------------------------*/
+
+components|HorizontalPagingList
+{
+    skinClass: ClassReference("com.esri.mobile.skins.mobile.HorizontalPagingListSkin");
+    verticalScrollPolicy: off;
+    horizontalScrollPolicy: on;
+    contentBackgroundAlpha: 0;
+    indicatorPosition: bottom;
+}
+components|HorizontalPagingList HScrollBar #thumb
+{
+    backgroundColor: #33B5E5;
+}
+components|HorizontalPagingList .indicator
+{
+    color: #33B5E5;
+    textAlign: center;
+    fontSize: 10;
+}
+
+/*----------------------------------
+	InfoWindow
+----------------------------------*/
+
+esri|InfoWindow
+{
+    skinClass: ClassReference("com.esri.mobile.skins.mobile.InfoWindowSkin");
+    color: #FFFFFF;
+}
+
+/*----------------------------------
+	InfoWindowContent
+----------------------------------*/
+
+components|InfoWindowContent Group#actionGroup Button
+{
+    skinClass: ClassReference("com.esri.mobile.skins.mobile.TransparentButtonSkin");
+}
+
+/*----------------------------------
+	InfoWindowDataRenderer
+----------------------------------*/
+
+components|InfoWindowDataRenderer
+{
+    color: #FFFFFF;
+}
+components|InfoWindowDataRenderer .subLabel
+{
+    color: #bebebe;
+    fontSize: 11;
+}
+
+/*----------------------------------
+	Navigation
+----------------------------------*/
+
+esri|Navigation
+{
+    skinClass: ClassReference("com.esri.mobile.skins.mobile.NavigationSkin");
+    left: 20;
+    top: 68;
+}
+esri|Navigation Button
+{
+    skinClass: ClassReference("com.esri.mobile.skins.mobile.NavigationSkin");
+    left: 20;
+    top: 68;
+}
+
+/*--------------------------------------------------------------------------
+*
+*                                FLEX
+*
+*--------------------------------------------------------------------------*/
+
+/*----------------------------------
+	ActionBar
+----------------------------------*/
+
+ActionBar
+{
+    skinClass: ClassReference("com.esri.mobile.skins.mobile.ActionBarSkin");
+    paddingTop: 0;
+    paddingBottom: 0;
+    paddingLeft: 0;
+    paddingRight: 0;
+    color: #FFFFFF;
+}
+Button.transparent, ActionBar Group#navigationGroup Button, ActionBar Group#actionGroup Button
+{
+    skinClass: ClassReference("com.esri.mobile.skins.mobile.TransparentButtonSkin");
+}
+ActionBar Group#actionGroup CalloutButton
+{
+    skinClass: ClassReference("com.esri.mobile.skins.mobile.ActionBarCalloutButtonSkin");
+}
+ActionBar components|DropDownList CalloutButton#calloutButton
+{
+    iconPlacement: right;
+    icon: ClassReference("com.esri.mobile.skins.mobile160.assets.NavigationDropDownIcon");
+}
+
+/*----------------------------------
+	Button
+----------------------------------*/
+
+Button
+{
+    skinClass: ClassReference("com.esri.mobile.skins.mobile.ButtonSkin");
+}
+
+/*----------------------------------
+	CheckBox
+----------------------------------*/
+
+CheckBox
+{
+    skinClass: ClassReference("com.esri.mobile.skins.mobile.CheckBoxSkin");
+}
+
+/*----------------------------------
+	HSlider
+----------------------------------*/
+
+HSlider
+{
+    skinClass: ClassReference("com.esri.mobile.skins.mobile.HSliderSkin");
+}
+
+/*----------------------------------
+	RadioButton
+----------------------------------*/
+
+RadioButton
+{
+    skinClass: ClassReference("com.esri.mobile.skins.mobile.RadioButtonSkin");
+}
+
+/*----------------------------------
+	TextArea
+----------------------------------*/
+
+TextArea
+{
+    skinClass: ClassReference("com.esri.mobile.skins.mobile.StageTextAreaSkin");
+    contentBackgroundColor: #FEFEFE;
+    contentBackgroundAlpha: 1.0;
+    contentBackgroundAppearance: flat;
+    /* don't pay intention to the warning, borderColor is used in the skin */
+    borderColor: #CCCCCC; 
+}
+
+/*----------------------------------
+	TextInput
+----------------------------------*/
+
+TextInput
+{
+    skinClass: ClassReference("com.esri.mobile.skins.mobile.StageTextInputSkin");
+    contentBackgroundColor: #FEFEFE;
+    contentBackgroundAlpha: 1.0;
+    contentBackgroundAppearance: flat;
+    /* don't pay intention to the warning, borderColor is used in the skin */
+    borderColor: #CCCCCC;
+}
+
+/*----------------------------------
+	ViewNavigator
+----------------------------------*/
+
+ViewNavigator
+{
+    skinClass: ClassReference("com.esri.mobile.skins.mobile.ViewNavigatorSkin");
+}
+
+/*----------------------------------
+	V/HScrollBar
+----------------------------------*/
+
+HScrollBar
+{
+    skinClass: ClassReference("com.esri.mobile.skins.mobile.HScrollBarSkin");
+}
+
+VScrollBar
+{
+    skinClass: ClassReference("com.esri.mobile.skins.mobile.VScrollBarSkin");
+}
+
+HScrollBar #thumb, VScrollBar #thumb
+{
+    backgroundColor: #2d2d2d;
+    backgroundAlpha: 0.8;
+}
+
