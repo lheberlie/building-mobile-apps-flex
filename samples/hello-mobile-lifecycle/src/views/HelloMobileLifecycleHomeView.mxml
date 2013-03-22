@@ -32,10 +32,7 @@
             import com.esri.ags.events.LayerEvent;
             import com.esri.ags.events.MapEvent;
 
-            import mx.binding.utils.ChangeWatcher;
             import mx.collections.ArrayCollection;
-            import mx.events.CollectionEvent;
-            import mx.events.CollectionEventKind;
             import mx.events.FlexEvent;
 
             import spark.events.ViewNavigatorEvent;
