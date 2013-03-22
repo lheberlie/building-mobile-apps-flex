@@ -69,7 +69,7 @@
                 if (m_map)
                 {
                     m_map.zoomToInitialExtent();
-                    m_map.rotation = 0;
+                    m_map.mapRotation = 0;
                 }
             }
 
