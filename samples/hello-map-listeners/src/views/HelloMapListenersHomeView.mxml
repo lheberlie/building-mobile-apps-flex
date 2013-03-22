@@ -1,0 +1,306 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+///////////////////////////////////////////////////////////////////////////
+// Copyright (c) 2010-2013 Esri. All Rights Reserved.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//    http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+///////////////////////////////////////////////////////////////////////////
+-->
+<s:View xmlns:fx="http://ns.adobe.com/mxml/2009"
+        xmlns:s="library://ns.adobe.com/flex/spark"
+        xmlns:esri="http://www.esri.com/2008/ags"
+        xmlns:components="com.github.lheberlie.components.*"
+        actionBarVisible="false"
+        backgroundAlpha="0"
+        creationComplete="helloMapListenersHomeView_creationCompleteHandler(event)"
+        initialize="helloMapListenersHomeView_initializeHandler(event)"
+        viewActivate="helloMapListenersHomeView_viewActivateHandler(event)">
+
+    <fx:Script>
+        <![CDATA[
+            import com.esri.ags.Graphic;
+            import com.esri.ags.events.LayerEvent;
+            import com.esri.ags.events.MapEvent;
+            import com.esri.ags.geometry.MapPoint;
+            import com.esri.ags.utils.WebMercatorUtil;
+
+            import mx.collections.ArrayCollection;
+            import mx.events.FlexEvent;
+            import mx.utils.ObjectProxy;
+
+            import spark.events.ViewNavigatorEvent;
+
+            import assets.fxg.location_blue_pin;
+
+            [Bindable]
+            private var lifeCycleArrayCollection:ArrayCollection = new ArrayCollection();
+            [Bindable]
+            private var attributeProxy:ObjectProxy;
+
+            protected function helloMapListenersHomeView_initializeHandler(event:FlexEvent):void
+            {
+                lifeCycleArrayCollection.addItem("View Initialized");
+            }
+
+            protected function helloMapListenersHomeView_creationCompleteHandler(event:FlexEvent):void
+            {
+                lifeCycleArrayCollection.addItem("View Creation Complete");
+            }
+
+            protected function helloMapListenersHomeView_viewActivateHandler(event:ViewNavigatorEvent):void
+            {
+                lifeCycleArrayCollection.addItem("View Activated");
+            }
+
+            protected function map_loadHandler(event:MapEvent):void
+            {
+                lifeCycleArrayCollection.addItem("Map loaded");
+                map.infoWindow.labelVisible = false;
+                map.infoWindow.closeButtonVisible = false;
+                //add layer event listener throught ActionScript
+                //graphicsLayer.addEventListener(MapMouseEvent.MAP_CLICK,name,
+            }
+
+            protected function worldTopoMap_loadHandler(event:LayerEvent):void
+            {
+                lifeCycleArrayCollection.addItem("BaseMap loaded");
+            }
+
+            protected function graphicsLayer_clickHandler(event:MouseEvent):void
+            {
+                trace("graphics layer clicked");
+                if (event.currentTarget is Graphic)
+                {
+                    var graphic:Graphic = event.currentTarget as Graphic;
+                    var graphicName:String = graphic.attributes.name;
+                    eventListenersStatus.text += graphicName + "\n";
+                }
+            }
+
+            protected function map_clickHandler(event:MouseEvent):void
+            {
+                var toMapXY:MapPoint = map.toMapFromStage(event.stageX, event.stageY);
+                var mapPoint:MapPoint = WebMercatorUtil.webMercatorToGeographic(toMapXY) as MapPoint;
+                trace("Map clicked: lon:" + numberFormatter.format(mapPoint.x) + ", lat:" + numberFormatter.format(mapPoint.y));
+                //event.stopImmediatePropagation();
+            }
+
+            protected function graphic_clickHandler(event:MouseEvent):void
+            {
+                trace("graphic clicked");
+                var clickedGraphic:Graphic = event.currentTarget as Graphic;
+                var clickedGraphicName:String = clickedGraphic.attributes.name;
+                eventListenersStatus.text += clickedGraphicName + "\n";
+            }
+        ]]>
+    </fx:Script>
+
+    <fx:Declarations>
+        <!-- Place non-visual elements (e.g., services, value objects) here -->
+        <esri:SpatialReference id="wmSR" wkid="102100"/>
+        <esri:PictureMarkerSymbol id="locationPMS"
+                                  width="20" height="20"
+                                  source="{location_blue_pin}"/>
+        <s:NumberFormatter id="numberFormatter"
+                           fractionalDigits="2"
+                           trailingZeros="false"/>
+    </fx:Declarations>
+
+    <s:Rect left="0" right="0" top="0" bottom="0">
+        <s:fill>
+            <s:LinearGradient x="200" y="0"
+                              rotation="90"
+                              scaleX="400">
+                <s:GradientEntry alpha="1"
+                                 color="#3e3e3e"
+                                 ratio="0"/>
+                <s:GradientEntry alpha="1"
+                                 color="#161616"
+                                 ratio="1"/>
+            </s:LinearGradient>
+        </s:fill>
+    </s:Rect>
+
+    <esri:Map id="map"
+              click="map_clickHandler(event)"
+              infoWindowRendererHighlightColor="0xA3E7E2"
+              level="18"
+              load="map_loadHandler(event)"
+              zoomSliderVisible="false">
+        <esri:center>
+            <esri:WebMercatorMapPoint lon="-116.537910" lat="33.825232"/>
+        </esri:center>
+        <esri:ArcGISTiledMapServiceLayer id="worldTopoMap"
+                                         load="worldTopoMap_loadHandler(event)"
+                                         url="http://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer"/>
+        <esri:GraphicsLayer id="graphicsLayer" click="graphicsLayer_clickHandler(event)">
+            <esri:infoWindowRenderer>
+                <fx:Component>
+                    <esri:LabelDataRenderer label="Event">
+                        <s:Label fontWeight="bold" text="{data.name}"/>
+                    </esri:LabelDataRenderer>
+                </fx:Component>
+            </esri:infoWindowRenderer>
+            <!-- set checkForMouseListeners to false so we can still pan the map when on a graphic -->
+            <esri:Graphic id="meetTheTeams"
+                          checkForMouseListeners="false"
+                          click="graphic_clickHandler(event)">
+                <esri:geometry>
+                    <esri:Extent xmin="-12973050.15030016" ymin="4005235.7288928926" xmax="-12972954.604014833" ymax="4005330.6780139366"
+                                 spatialReference="{wmSR}"/>
+                </esri:geometry>
+                <esri:symbol>
+                    <esri:SimpleFillSymbol style="null">
+                        <esri:outline>
+                            <esri:SimpleLineSymbol width="2" color="0x0000FF"/>
+                        </esri:outline>
+                    </esri:SimpleFillSymbol>
+                </esri:symbol>
+                <esri:attributes>
+                    <fx:Object name="Meet the Teams"/>
+                </esri:attributes>
+            </esri:Graphic>
+            <esri:Graphic id="TechSessionsA"
+                          checkForMouseListeners="false"
+                          click="graphic_clickHandler(event)">
+                <esri:geometry>
+                    <esri:Extent xmin="-12973079.560641149" ymin="4005333.066671083" xmax="-12972922.506434573" ymax="4005394.57459229"
+                                 spatialReference="{wmSR}"/>
+                </esri:geometry>
+                <esri:symbol>
+                    <esri:SimpleFillSymbol alpha="0.4"
+                                           color="0xFA0017"
+                                           style="solid">
+                        <esri:outline>
+                            <esri:SimpleLineSymbol width="2" color="0xFA0017"/>
+                        </esri:outline>
+                    </esri:SimpleFillSymbol>
+                </esri:symbol>
+                <esri:attributes>
+                    <fx:Object name="Technical Sessions"/>
+                </esri:attributes>
+            </esri:Graphic>
+            <esri:Graphic id="TechSessionsB"
+                          checkForMouseListeners="false"
+                          click="graphic_clickHandler(event)">
+                <esri:geometry>
+                    <esri:Extent xmin="-12973065.228698343" ymin="4005495.495356211" xmax="-12973015.066898523" ymax="4005537.8940203437"
+                                 spatialReference="{wmSR}"/>
+                </esri:geometry>
+                <esri:symbol>
+                    <esri:SimpleFillSymbol alpha="0.4"
+                                           color="0xFA0017"
+                                           style="solid">
+                        <esri:outline>
+                            <esri:SimpleLineSymbol width="2" color="0xFA0017"/>
+                        </esri:outline>
+                    </esri:SimpleFillSymbol>
+                </esri:symbol>
+                <esri:attributes>
+                    <fx:Object name="Technical Sessions"/>
+                </esri:attributes>
+            </esri:Graphic>
+            <esri:Graphic id="Registration"
+                          checkForMouseListeners="false"
+                          click="graphic_clickHandler(event)">
+                <esri:geometry>
+                    <esri:Extent xmin="-12973070.006012611" ymin="4005407.1150422445" xmax="-12973044.327948418" ymax="4005472.2059491524"
+                                 spatialReference="{wmSR}"/>
+                </esri:geometry>
+                <esri:symbol>
+                    <esri:SimpleFillSymbol alpha="0.4"
+                                           color="0x656D73"
+                                           style="solid">
+                        <esri:outline>
+                            <esri:SimpleLineSymbol width="2" color="0x656D73"/>
+                        </esri:outline>
+                    </esri:SimpleFillSymbol>
+                </esri:symbol>
+                <esri:attributes>
+                    <fx:Object name="Registration"/>
+                </esri:attributes>
+            </esri:Graphic>
+            <esri:Graphic id="Showcase"
+                          checkForMouseListeners="false"
+                          click="graphic_clickHandler(event)">
+                <esri:geometry>
+                    <esri:Extent xmin="-12973041.939291283" ymin="4005406.517877961" xmax="-12972961.919277288" ymax="4005472.2059491524"
+                                 spatialReference="{wmSR}"/>
+                </esri:geometry>
+                <esri:symbol>
+                    <esri:SimpleFillSymbol alpha="0.4"
+                                           color="0xD5DF9E"
+                                           style="solid">
+                        <esri:outline>
+                            <esri:SimpleLineSymbol width="2" color="0xD5DF9E"/>
+                        </esri:outline>
+                    </esri:SimpleFillSymbol>
+                </esri:symbol>
+                <esri:attributes>
+                    <fx:Object name="Esri Showcase"/>
+                </esri:attributes>
+            </esri:Graphic>
+            <esri:Graphic id="Plenary_Keynote"
+                          checkForMouseListeners="false"
+                          click="graphic_clickHandler(event)">
+                <esri:geometry>
+                    <esri:Extent xmin="-12972914.743298886" ymin="4005407.1150422445" xmax="-12972860.401349083" ymax="4005473.4002777194"
+                                 spatialReference="{wmSR}"/>
+                </esri:geometry>
+                <esri:symbol>
+                    <esri:SimpleFillSymbol alpha="0.4"
+                                           color="0xF5952E"
+                                           style="solid">
+                        <esri:outline>
+                            <esri:SimpleLineSymbol width="2" color="0xF5952E"/>
+                        </esri:outline>
+                    </esri:SimpleFillSymbol>
+                </esri:symbol>
+                <esri:attributes>
+                    <fx:Object name="Plenary/Keynote"/>
+                </esri:attributes>
+            </esri:Graphic>
+        </esri:GraphicsLayer>
+    </esri:Map>
+
+    <components:MobileNavigation left="20" top="20"
+                                 map="{map}"/>
+
+    <s:Group width="300" height="350"
+             right="20" top="20">
+        <s:Rect left="0" right="0" top="0" bottom="0"
+                radiusX="10"
+                radiusY="10">
+            <s:fill>
+                <s:LinearGradient x="200" y="0"
+                                  rotation="90"
+                                  scaleX="400">
+                    <s:GradientEntry alpha="1"
+                                     color="#3e3e3e"
+                                     ratio="0"/>
+                    <s:GradientEntry alpha="1"
+                                     color="#161616"
+                                     ratio="1"/>
+                </s:LinearGradient>
+            </s:fill>
+        </s:Rect>
+        <s:Label height="30"
+                 left="5" right="5" top="10"
+                 styleName="eventListenersLabel"
+                 text="Event Listeners"/>
+        <s:TextArea id="eventListenersStatus"
+                    left="5" right="5" top="40" bottom="5"
+                    styleName="eventListenersStatusLabel"/>
+    </s:Group>
+
+</s:View>
