@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+///////////////////////////////////////////////////////////////////////////
+// Copyright (c) 2008-2013 Esri. All Rights Reserved.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//    http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+///////////////////////////////////////////////////////////////////////////
+-->
+<components:View xmlns:fx="http://ns.adobe.com/mxml/2009"
+                 xmlns:s="library://ns.adobe.com/flex/spark"
+                 xmlns:components="com.esri.mobile.components.*"
+                 icon="@2_action_bookmarks.png"
+                 title="Bookmarks"
+                 viewActivate="viewActivateHandler(event)">
+
+    <fx:Script>
+        <![CDATA[
+            import app.portal.Bookmark;
+            
+            import com.esri.ags.geometry.Extent;
+            
+            import mx.collections.ArrayList;
+            
+            import spark.events.IndexChangeEvent;
+            import spark.events.ViewNavigatorEvent;
+
+            private function viewActivateHandler(event:ViewNavigatorEvent):void
+            {
+                // Convert the data as the array of bookmarks
+                bookmarkList.dataProvider = applicationContext.bookmarks;
+            }
+
+            private function changingHandler(event:IndexChangeEvent):void
+            {
+                event.preventDefault();
+                var bookmark:Bookmark = bookmarkList.dataProvider.getItemAt(event.newIndex) as Bookmark;
+                applicationContext.map.zoomTo(bookmark.extent);
+                closeViewIfPopUp();
+            }
+            
+            private function addButtonClick(event:MouseEvent):void
+            {
+                applicationContext.bookmarks.addItem(new Bookmark(bookmarkName.text, applicationContext.map.extent));
+            }
+            
+        ]]>
+    </fx:Script>
+
+    <components:layout>
+        <s:VerticalLayout paddingBottom="8"
+                          paddingLeft="8"
+                          paddingRight="8"
+                          paddingTop="8" gap="8"/>
+    </components:layout>
+
+    <s:List id="bookmarkList"
+            width="100%" height="100%"
+            changing="changingHandler(event)"
+            labelField="name">
+    </s:List>
+
+    <s:Line width="100%">
+        <s:stroke>
+            <s:SolidColorStroke color="0xCCCCCC"/>
+        </s:stroke>
+    </s:Line>
+
+    <s:HGroup width="100%" paddingTop="5">
+        <s:TextInput id="bookmarkName" width="100%" height="100%"
+                     prompt="Add Bookmark"/>
+        <s:Button click="addButtonClick(event)" height="100%" styleName="transparent add"/>
+    </s:HGroup>
+
+</components:View>

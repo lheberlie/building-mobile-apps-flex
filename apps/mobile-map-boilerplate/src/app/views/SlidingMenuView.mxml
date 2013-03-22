@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+///////////////////////////////////////////////////////////////////////////
+// Copyright (c) 2008-2013 Esri. All Rights Reserved.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//    http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+///////////////////////////////////////////////////////////////////////////
+-->
+<esrimobile:View xmlns:fx="http://ns.adobe.com/mxml/2009"
+                 xmlns:s="library://ns.adobe.com/flex/spark"
+                 xmlns:esri="http://www.esri.com/2008/ags"
+                 xmlns:esrimobile="com.esri.mobile.components.*"
+                 actionBarVisible="true"
+                 backgroundColor="0x484848"
+                 color="0xFFFFFF"
+                 overlayControls="true"
+                 title="{applicationContext.portal.info.portalName}">
+
+    <fx:Script>
+        <![CDATA[
+            import com.esri.ags.portal.supportClasses.PortalItem;
+            import com.esri.ags.portal.supportClasses.PortalQueryParameters;
+            
+            import mx.events.FlexEvent;
+            import mx.rpc.events.ResultEvent;
+            
+            import spark.events.IndexChangeEvent;
+            import spark.events.ViewNavigatorEvent;
+
+            private function webMapSearchEnterHandler(event:FlexEvent):void
+            {
+                var portalQueryParameters:PortalQueryParameters = new PortalQueryParameters();
+                portalQueryParameters.ofType(PortalItem.TYPE_WEB_MAP);
+                portalQueryParameters.addQueryCondition(webmapSearchInput.text);
+                webmapSearchResponder.token = applicationContext.portal.queryItems(portalQueryParameters);
+            }
+
+            protected function changingHandler(event:IndexChangeEvent):void
+            {
+                event.preventDefault();
+                navigator.pushView(app.views.PortalItemView, webmapSearchResultList.dataProvider.getItemAt(event.newIndex));
+            }
+            
+        ]]>
+    </fx:Script>
+
+    <fx:Declarations>
+        <esri:CallResponder id="webmapSearchResponder"/>
+    </fx:Declarations>
+
+    <s:Scroller left="0" right="0" top="56" bottom="0">
+        <s:VGroup left="0" right="0"
+                  gap="8"
+                  paddingBottom="8"
+                  paddingTop="8">
+            <s:HGroup width="100%"
+                      paddingLeft="8"
+                      paddingRight="8">
+                <s:Image id="userPicture"
+                         width="48" height="48"
+                         smooth="true"
+                         source="{applicationContext.portal.user.thumbnailURL}"/>
+                <s:Label id="userFullname"
+                         width="100%" height="100%"
+                         color="#FFFFFF"
+                         fontWeight="bold"
+                         text="{applicationContext.portal.user.fullname}"
+                         textAlign="justify"
+                         verticalAlign="middle"/>
+            </s:HGroup>
+
+            <s:TextInput id="webmapSearchInput"
+                         width="100%"
+                         enter="webMapSearchEnterHandler(event)"
+                         prompt="Look for maps..."
+                         returnKeyLabel="search"/>
+
+            <s:List id="webmapSearchResultList"
+                    width="100%" height="100%"
+                    alternatingItemColors="#484848"
+                    changing="changingHandler(event)"
+                    contentBackgroundAlpha="0"
+                    itemRenderer="com.esri.mobile.components.LabelItemRenderer"
+                    labelField="title">
+                <s:dataProvider>
+                    <s:ArrayList source="{webmapSearchResponder.lastResult.results}"/>
+                </s:dataProvider>
+            </s:List>
+        </s:VGroup>
+    </s:Scroller>
+
+</esrimobile:View>
