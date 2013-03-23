@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="src" path="gen"/>
+	<classpathentry kind="lib" path="/Users/lheberlie/Adobe/Flex_SDKs/4.6.0.6/lib/android/FlashRuntimeExtensions.jar"/>
+	<classpathentry kind="lib" path="/Users/lheberlie/Google Developer/Android/adt-bundle-mac-x86_64-20130219/sdk/platforms/android-17/android.jar"/>
+	<classpathentry kind="output" path="bin/classes"/>
+</classpath>
