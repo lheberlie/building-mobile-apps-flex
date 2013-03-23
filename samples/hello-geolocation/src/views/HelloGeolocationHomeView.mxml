@@ -90,12 +90,12 @@
                 geolocationStatus.text = "latitude: " + numberFormatter.format(event.latitude.toString()) + "\n"
                     + "longitude: " + numberFormatter.format(event.longitude.toString()) + "\n"
                     + "altitude: " + numberFormatter.format(event.altitude.toString()) + "\n"
-                    + "speed: " + event.speed.toString() + "\n"
-                    + "speed: " + mph.toString() + " MPH \n"
-                    + "speed: " + kph.toString() + " KPH \n"
+                    + "speed: " + numberFormatter.format(event.speed.toString()) + "\n"
+                    + "speed: " + numberFormatter.format(mph.toString()) + " MPH \n"
+                    + "speed: " + numberFormatter.format(kph.toString()) + " KPH \n"
                     + "heading: " + numberFormatter.format(event.heading.toString()) + "\n"
-                    + "horizontal accuracy: " + event.horizontalAccuracy.toString() + "\n"
-                    + "vertical accuracy: " + event.verticalAccuracy.toString();
+                    + "horizontal accuracy: " + numberFormatter.format(event.horizontalAccuracy.toString()) + "\n"
+                    + "vertical accuracy: " + numberFormatter.format(event.verticalAccuracy.toString());
 
                 currentLocation.lon = event.longitude;
                 currentLocation.lat = event.latitude;
@@ -156,7 +156,7 @@
     <components:MobileNavigation left="20" top="20"
                                  map="{map}"/>
 
-    <s:Group width="300" height="350"
+    <s:Group width="350" height="350"
              right="20" top="20">
         <s:Rect left="0" right="0" top="0" bottom="0"
                 radiusX="10"
