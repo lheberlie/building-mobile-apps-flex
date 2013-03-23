@@ -6,5 +6,6 @@ bin-release-temp/
 
 # Other files and folders
 .settings/
+build/
 
 ags*.swc
