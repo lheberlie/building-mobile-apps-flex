@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+///////////////////////////////////////////////////////////////////////////
+// Copyright (c) 2008-2013 Esri. All Rights Reserved.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//    http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+///////////////////////////////////////////////////////////////////////////
+-->
+<s:View xmlns:fx="http://ns.adobe.com/mxml/2009"
+        xmlns:s="library://ns.adobe.com/flex/spark"
+        title="SignInView">
+    <s:layout>
+        <s:VerticalLayout/>
+    </s:layout>
+    <fx:Script>
+        <![CDATA[
+            import com.esri.ags.components.IdentityManager;
+            import com.esri.ags.components.supportClasses.Credential;
+            import com.esri.ags.components.supportClasses.SignInInfo;
+
+            import mx.events.FlexEvent;
+            import mx.rpc.Fault;
+            import mx.rpc.Responder;
+            import mx.utils.StringUtil;
+            import mx.utils.URLUtil;
+
+            //--------------------------------------------------------------------------
+            //
+            //  Variables
+            //
+            //--------------------------------------------------------------------------
+
+            protected var m_idManager:IdentityManager = IdentityManager.instance;
+
+            [Bindable]
+            protected var m_busy:Boolean;
+
+            //--------------------------------------------------------------------------
+            //
+            //  Methods
+            //
+            //--------------------------------------------------------------------------
+
+            protected function signIn():void
+            {
+                const usr:String = username.text;
+                const pwd:String = password.text;
+                const signInInfo:SignInInfo = m_idManager.currentSignInInfo;
+
+                if (m_busy || !signInInfo || !usr || !pwd)
+                {
+                    // Invalid input
+                    return;
+                }
+
+                m_busy = true;
+                errorMsg.visible = false;
+                m_idManager.generateCredential(signInInfo.serverInfo,
+                                               usr, pwd,
+                                               new mx.rpc.Responder(generateCredentialResult,
+                                                                    generateCredentialFault));
+            }
+
+            protected function cancel():void
+            {
+                m_idManager.setCredentialForCurrentSignIn(null);
+                navigator.popView();
+            }
+
+            protected function generateCredentialResult(credential:Credential):void
+            {
+                m_idManager.setCredentialForCurrentSignIn(credential);
+                navigator.popView();
+            }
+
+            protected function generateCredentialFault(fault:Fault):void
+            {
+                // Login error. Keep the dialog open.
+                var faultString:String = fault.faultString;
+                if (faultString
+                    && (faultString.indexOf("2048") != -1 // Security sandbox violation
+                    || faultString.indexOf("2032") != -1)) // Stream Error
+                {
+                    errorMsg.text = faultString;
+                }
+                else
+                {
+                    errorMsg.text = resourceManager.getString('ESRIMessages', 'signInWindow_error');
+                    password.text = "";
+                    password.setFocus();
+                }
+                m_busy = false;
+                errorMsg.visible = true;
+            }
+
+            //--------------------------------------------------------------------------
+            //
+            //  Event Handlers
+            //
+            //--------------------------------------------------------------------------
+
+            protected function titlewindow_initializeHandler(event:FlexEvent):void
+            {
+                const signInInfo:SignInInfo = m_idManager.currentSignInInfo;
+                const info:String = resourceManager.getString('ESRIMessages', 'signInWindow_info');
+                const resourceHost:String = URLUtil.getServerNameWithPort(signInInfo.resourceURL);
+
+                // default info is "Please log in to access {0} on {1}"
+                infoText.text = StringUtil.substitute(info, signInInfo.resourceName, resourceHost);
+
+                if (!URLUtil.isHttpsURL(signInInfo.serverInfo.tokenServiceURL))
+                {
+                    insecureMsg.text = resourceManager.getString('ESRIMessages', 'signInWindow_insecure');
+                    insecureMsg.visible = insecureMsg.includeInLayout = true;
+                }
+            }
+        ]]>
+    </fx:Script>
+    <fx:Declarations>
+        <!-- Place non-visual elements (e.g., services, value objects) here -->
+    </fx:Declarations>
+
+    <s:RichEditableText id="infoText"
+                        width="100%"
+                        editable="false"
+                        focusEnabled="false"/>
+
+    <s:Form width="100%">
+        <s:layout>
+            <s:FormLayout gap="0"/>
+        </s:layout>
+        <s:FormItem width="100%"
+                    label="{resourceManager.getString('ESRIMessages', 'signInWindow_username')}"
+                    required="true">
+            <s:TextInput id="username"
+                         width="100%"
+                         autoCorrect="false"
+                         enter="password.setFocus()"
+                         returnKeyLabel="next"/>
+        </s:FormItem>
+        <s:FormItem width="100%"
+                    label="{resourceManager.getString('ESRIMessages', 'signInWindow_password')}"
+                    required="true">
+            <s:TextInput id="password"
+                         width="100%"
+                         displayAsPassword="true"
+                         enter="signIn()"
+                         returnKeyLabel="go"/>
+        </s:FormItem>
+        <s:Label id="insecureMsg"
+                 width="100%"
+                 includeInLayout="false"
+                 textAlign="center"
+                 visible="false"/>
+    </s:Form>
+
+    <s:Label id="errorMsg"
+             width="100%"
+             textAlign="center"
+             visible="false"/>
+
+    <s:HGroup width="100%"
+              gap="10"
+              horizontalAlign="center"
+              paddingTop="10">
+        <s:Button click="signIn()"
+                  enabled="{!m_busy &amp;&amp; username.text &amp;&amp; password.text}"
+                  label="{m_busy ? resourceManager.getString('ESRIMessages', 'signInWindow_signingIn') : resourceManager.getString('ESRIMessages', 'signInWindow_OK')}"/>
+        <s:Button click="cancel()" label="{resourceManager.getString('ESRIMessages', 'signInWindow_cancel')}"/>
+    </s:HGroup>
+</s:View>
