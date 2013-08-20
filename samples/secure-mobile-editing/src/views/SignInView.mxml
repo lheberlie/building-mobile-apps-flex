@@ -18,10 +18,18 @@
 -->
 <s:View xmlns:fx="http://ns.adobe.com/mxml/2009"
         xmlns:s="library://ns.adobe.com/flex/spark"
-        title="SignInView">
+        initialize="titlewindow_initializeHandler(event)"
+        title="{resourceManager.getString('ESRIMessages', 'signInWindow_title')}">
+
     <s:layout>
-        <s:VerticalLayout/>
+        <s:VerticalLayout gap="0"
+                          horizontalAlign="center"
+                          paddingBottom="6"
+                          paddingLeft="6"
+                          paddingRight="6"
+                          paddingTop="6"/>
     </s:layout>
+
     <fx:Script>
         <![CDATA[
             import com.esri.ags.components.IdentityManager;
@@ -126,9 +134,6 @@
             }
         ]]>
     </fx:Script>
-    <fx:Declarations>
-        <!-- Place non-visual elements (e.g., services, value objects) here -->
-    </fx:Declarations>
 
     <s:RichEditableText id="infoText"
                         width="100%"
@@ -173,9 +178,12 @@
               gap="10"
               horizontalAlign="center"
               paddingTop="10">
+        <s:Button click="cancel()"
+                  label="{resourceManager.getString('ESRIMessages', 'signInWindow_cancel')}"
+                  minWidth="80"/>
         <s:Button click="signIn()"
                   enabled="{!m_busy &amp;&amp; username.text &amp;&amp; password.text}"
-                  label="{m_busy ? resourceManager.getString('ESRIMessages', 'signInWindow_signingIn') : resourceManager.getString('ESRIMessages', 'signInWindow_OK')}"/>
-        <s:Button click="cancel()" label="{resourceManager.getString('ESRIMessages', 'signInWindow_cancel')}"/>
+                  label="{m_busy ? resourceManager.getString('ESRIMessages', 'signInWindow_signingIn') : resourceManager.getString('ESRIMessages', 'signInWindow_OK')}"
+                  minWidth="80"/>
     </s:HGroup>
 </s:View>
