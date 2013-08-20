@@ -20,22 +20,20 @@
         xmlns:s="library://ns.adobe.com/flex/spark"
         xmlns:mx="library://ns.adobe.com/flex/mx"
         xmlns:esri="http://www.esri.com/2008/ags"
+        actionBarVisible="false"
         initialize="application1_initializeHandler(event)">
 
     <fx:Script>
         <![CDATA[
             import com.esri.ags.components.IdentityManager;
-            import com.esri.ags.components.supportClasses.Credential;
             import com.esri.ags.events.IdentityManagerEvent;
             import com.esri.ags.events.LayerEvent;
-            import com.esri.ags.geometry.MapPoint;
             import com.esri.ags.layers.TiledMapServiceLayer;
             import com.esri.ags.tasks.GeometryService;
 
             import mx.events.FlexEvent;
 
             private var m_identityManager:IdentityManager = IdentityManager.instance;
-            private var m_credential:Credential;
 
             protected function application1_initializeHandler(event:FlexEvent):void
             {
@@ -65,10 +63,6 @@
     </fx:Script>
 
     <fx:Declarations>
-        <esri:Extent id="initialExtent"
-                     xmin="-13449015" ymin="4182302" xmax="-13433803" ymax="4191340">
-            <esri:SpatialReference wkid="102100"/>
-        </esri:Extent>
         <!-- FieldInspector for the 'creator' field -->
         <esri:FieldInspector id="creatorFI"
                              featureLayer="{marine}"
@@ -80,18 +74,28 @@
                              label="Sighting"/>
     </fx:Declarations>
 
-
     <esri:Map id="myMap"
-              bottom="150"
-              level="4"
-              load="myMap.centerAt(new MapPoint(-11713000, 4822000))"
+              bottom="110"
               zoomSliderVisible="false">
+        <esri:extent>
+            <esri:WebMercatorExtent id="webMercatorExtent27"
+                                    minlon="-95.306669" minlat="28.987585" maxlon="-95.076642" maxlat="29.137333"/>
+        </esri:extent>
         <esri:ArcGISTiledMapServiceLayer show="layerShowHandler(event)"
                                          url="http://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer"
                                          visible="{bb.selectedIndex == 0}"/>
         <esri:ArcGISTiledMapServiceLayer show="layerShowHandler(event)"
-                                         url="http://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer"
+                                         url="http://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer"
                                          visible="{bb.selectedIndex == 1}"/>
+        <esri:ArcGISTiledMapServiceLayer show="layerShowHandler(event)"
+                                         url="http://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer"
+                                         visible="{bb.selectedIndex == 2}"/>
+        <esri:ArcGISTiledMapServiceLayer show="layerShowHandler(event)"
+                                         url="http://server.arcgisonline.com/ArcGIS/rest/services/Ocean_Basemap/MapServer"
+                                         visible="{bb.selectedIndex == 3}"/>
+        <esri:ArcGISTiledMapServiceLayer show="layerShowHandler(event)"
+                                         url="http://server.arcgisonline.com/ArcGIS/rest/services/NatGeo_World_Map/MapServer"
+                                         visible="{bb.selectedIndex == 4}"/>
         <esri:FeatureLayer id="marine" name="SaveTheBay-Marine"
                            load="marine_loadHandler(event)"
                            mode="snapshot"
@@ -104,19 +108,23 @@
         <s:dataProvider>
             <s:ArrayList>
                 <fx:String>Street</fx:String>
-                <fx:String>Imagery</fx:String>
+                <fx:String>Topo</fx:String>
+                <fx:String>Photo</fx:String>
+                <fx:String>Ocean</fx:String>
+                <fx:String>NatGeo</fx:String>
             </s:ArrayList>
         </s:dataProvider>
     </s:ButtonBar>
 
     <esri:Editor id="myEditor"
-                 width="100%" height="150"
+                 width="100%" height="110"
                  bottom="0"
                  geometryService="{new GeometryService('http://sampleserver6.arcgisonline.com/arcgis/rest/services/Utilities/Geometry/GeometryServer')}"
                  map="{myMap}"
                  visible="true"/>
     <esri:Geocoder id="geocoder"
-                   right="20" top="100"
+                   height="45"
+                   right="20" top="85"
                    map="{myMap}"
                    skinClass="com.esri.mobile.skins.mobile.GeocoderSkin"/>
 </s:View>
