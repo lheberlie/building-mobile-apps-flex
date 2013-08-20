@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+///////////////////////////////////////////////////////////////////////////
+// Copyright (c) 2008-2013 Esri. All Rights Reserved.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//    http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+///////////////////////////////////////////////////////////////////////////
+-->
+<s:View xmlns:fx="http://ns.adobe.com/mxml/2009"
+        xmlns:s="library://ns.adobe.com/flex/spark"
+        xmlns:mx="library://ns.adobe.com/flex/mx"
+        xmlns:esri="http://www.esri.com/2008/ags"
+        actionBarVisible="false"
+        initialize="application1_initializeHandler(event)">
+
+    <fx:Script>
+        <![CDATA[
+            import com.esri.ags.components.IdentityManager;
+            import com.esri.ags.events.IdentityManagerEvent;
+            import com.esri.ags.events.LayerEvent;
+            import com.esri.ags.layers.TiledMapServiceLayer;
+            import com.esri.ags.tasks.GeometryService;
+
+            import mx.events.FlexEvent;
+
+            private var m_identityManager:IdentityManager = IdentityManager.instance;
+
+            protected function application1_initializeHandler(event:FlexEvent):void
+            {
+                m_identityManager.enabled = true;
+                m_identityManager.addEventListener(IdentityManagerEvent.SHOW_SIGN_IN_WINDOW, showSignInWindowEventHandler, false, 0, true);
+            }
+
+            private function layerShowHandler(event:FlexEvent):void
+            {
+                // update the LODs/zoomslider to use/show the levels for the selected base map
+                var tiledLayer:TiledMapServiceLayer = event.target as TiledMapServiceLayer;
+                myMap.lods = tiledLayer.tileInfo.lods;
+            }
+
+            protected function marine_loadHandler(event:LayerEvent):void
+            {
+                myEditor.featureLayers = [ marine ];
+                myEditor.attributeInspector.fieldInspectors = [ creatorFI, typeFI ];
+            }
+
+            protected function showSignInWindowEventHandler(event:IdentityManagerEvent):void
+            {
+                event.preventDefault();
+                navigator.pushView(SignInView);
+            }
+        ]]>
+    </fx:Script>
+
+    <fx:Declarations>
+        <!-- FieldInspector for the 'creator' field -->
+        <esri:FieldInspector id="creatorFI"
+                             featureLayer="{marine}"
+                             fieldName="creator"
+                             label="Biologist"/>
+        <esri:FieldInspector id="typeFI"
+                             featureLayer="{marine}"
+                             fieldName="type"
+                             label="Sighting"/>
+    </fx:Declarations>
+
+    <esri:Map id="myMap"
+              bottom="110"
+              zoomSliderVisible="false">
+        <esri:extent>
+            <esri:WebMercatorExtent id="webMercatorExtent27"
+                                    minlon="-95.306669" minlat="28.987585" maxlon="-95.076642" maxlat="29.137333"/>
+        </esri:extent>
+        <esri:ArcGISTiledMapServiceLayer show="layerShowHandler(event)"
+                                         url="http://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer"
+                                         visible="{bb.selectedIndex == 0}"/>
+        <esri:ArcGISTiledMapServiceLayer show="layerShowHandler(event)"
+                                         url="http://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer"
+                                         visible="{bb.selectedIndex == 1}"/>
+        <esri:ArcGISTiledMapServiceLayer show="layerShowHandler(event)"
+                                         url="http://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer"
+                                         visible="{bb.selectedIndex == 2}"/>
+        <esri:ArcGISTiledMapServiceLayer show="layerShowHandler(event)"
+                                         url="http://server.arcgisonline.com/ArcGIS/rest/services/Ocean_Basemap/MapServer"
+                                         visible="{bb.selectedIndex == 3}"/>
+        <esri:ArcGISTiledMapServiceLayer show="layerShowHandler(event)"
+                                         url="http://server.arcgisonline.com/ArcGIS/rest/services/NatGeo_World_Map/MapServer"
+                                         visible="{bb.selectedIndex == 4}"/>
+        <esri:FeatureLayer id="marine" name="SaveTheBay-Marine"
+                           load="marine_loadHandler(event)"
+                           mode="snapshot"
+                           outFields="[type, confirmed, comments, creator]"
+                           url="http://sampleserver6.arcgisonline.com/arcgis/rest/services/SaveTheBay/FeatureServer/0"/>
+    </esri:Map>
+    <s:ButtonBar id="bb"
+                 right="20" top="20"
+                 requireSelection="true">
+        <s:dataProvider>
+            <s:ArrayList>
+                <fx:String>Street</fx:String>
+                <fx:String>Topo</fx:String>
+                <fx:String>Photo</fx:String>
+                <fx:String>Ocean</fx:String>
+                <fx:String>NatGeo</fx:String>
+            </s:ArrayList>
+        </s:dataProvider>
+    </s:ButtonBar>
+
+    <esri:Editor id="myEditor"
+                 width="100%" height="110"
+                 bottom="0"
+                 geometryService="{new GeometryService('http://sampleserver6.arcgisonline.com/arcgis/rest/services/Utilities/Geometry/GeometryServer')}"
+                 map="{myMap}"
+                 visible="true"/>
+    <esri:Geocoder id="geocoder"
+                   height="45"
+                   right="20" top="85"
+                   map="{myMap}"
+                   skinClass="com.esri.mobile.skins.mobile.GeocoderSkin"/>
+</s:View>
