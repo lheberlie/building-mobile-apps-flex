@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+///////////////////////////////////////////////////////////////////////////
+// Copyright (c) 2008-2013 Esri. All Rights Reserved.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//    http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+///////////////////////////////////////////////////////////////////////////
+-->
+<s:View xmlns:fx="http://ns.adobe.com/mxml/2009"
+        xmlns:s="library://ns.adobe.com/flex/spark"
+        xmlns:esri="http://www.esri.com/2008/ags"
+        actionBarVisible="false"
+        title="HomeView">
+
+    <fx:Script>
+        <![CDATA[
+            import com.esri.ags.FeatureSet;
+            import com.esri.ags.Graphic;
+            import com.esri.ags.components.ContentNavigator;
+            import com.esri.ags.events.MapEvent;
+            import com.esri.ags.geometry.MapPoint;
+            import com.esri.ags.layers.supportClasses.Field;
+            import com.esri.ags.portal.PopUpRenderer;
+            import com.esri.ags.portal.supportClasses.PopUpFieldFormat;
+            import com.esri.ags.portal.supportClasses.PopUpFieldInfo;
+            import com.esri.ags.portal.supportClasses.PopUpInfo;
+
+            import mx.collections.ArrayList;
+
+            private var featureSetJSON:Object = {
+                    "fieldAliases": {
+                        "NAME": "Name",
+                        "ADDRESS": "Address",
+                        "FOOD_TYPE": "Type"
+                    },
+                    "geometryType": "esriGeometryPoint",
+                    "spatialReference": {
+                        "wkid": 102100,
+                        "latestWkid": 3857
+                    },
+                    "fields": [
+                    {
+                        "name": "NAME",
+                        "type": "esriFieldTypeString",
+                        "alias": "Name",
+                        "length": 255
+                    },
+                    {
+                        "name": "ADDRESS",
+                        "type": "esriFieldTypeString",
+                        "alias": "Name",
+                        "length": 255
+                    },
+                    {
+                        "name": "FOOD_TYPE",
+                        "type": "esriFieldTypeString",
+                        "alias": "Type",
+                        "length": 50
+                    }
+                    ],
+                    "features": [
+                    {
+                        "attributes": {
+                            "NAME": "In-N-Out Burger",
+                            "ADDRESS": "1065 Harriman Pl, San Bernardino, CA",
+                            "FOOD_TYPE": "Fast Food"
+                        },
+                        "geometry": {
+                            "x": -13053527,
+                            "y": 4037728
+                        }
+                    }
+                    ]
+                };
+
+            protected function createInfoWindowRenderer(infoWindowFields:Array, infoWindowTitleField:String = "", infoWindowTitle:String = ""):ClassFactory
+            {
+                var popUpFieldInfosArray:Array = [];
+
+                var titleFieldName:String = "sourceCountry";
+                var popUpFieldFormat:PopUpFieldFormat = new PopUpFieldFormat();
+
+                for (var i:int = 0; i < infoWindowFields.length; i++)
+                {
+                    var field:Field = infoWindowFields[i] as Field;
+
+                    if (field.name.toLowerCase() == infoWindowTitleField.toLowerCase())
+                    {
+                        titleFieldName = field.name;
+                    }
+
+                    // Create the pop-up field infos for each field you want in the pop-up
+                    var popUpFieldInfo:PopUpFieldInfo = new PopUpFieldInfo();
+                    popUpFieldInfo.fieldName = field.name;
+                    popUpFieldInfo.label = field.alias;
+                    popUpFieldInfo.format = popUpFieldFormat;
+                    popUpFieldInfo.visible = true;
+
+                    popUpFieldInfosArray.push(popUpFieldInfo);
+                }
+
+                // Create the pop-up info
+                var popUpInfo:PopUpInfo = new PopUpInfo();
+                // Tell the pop-up info about the field name template
+                if (infoWindowTitleField != "")
+                {
+                    popUpInfo.title = "{" + titleFieldName + "}";
+                }
+                else
+                {
+                    popUpInfo.title = infoWindowTitle;
+                }
+                popUpInfo.popUpFieldInfos = popUpFieldInfosArray;
+                popUpInfo.showZoomToButton = false;
+
+                // Create the class factory 
+                var popUpRenderer:ClassFactory = new ClassFactory(PopUpRenderer);
+                // Set the "popUpInfo" key
+                popUpRenderer.properties = { "popUpInfo": popUpInfo, "width": 300, "maxHeight": 500 };
+
+                return popUpRenderer;
+            }
+
+            protected function map_loadHandler(event:MapEvent):void
+            {
+                var featureSet:FeatureSet = FeatureSet.fromJSON(featureSetJSON);
+
+                var contentNavigator:ContentNavigator = map.infoWindow.content as ContentNavigator;
+                if (!contentNavigator)
+                {
+                    contentNavigator = new ContentNavigator();
+                    map.infoWindow.content = contentNavigator;
+                }
+
+                var graphic:Graphic = new Graphic(featureSet.features[0].geometry, pms, featureSet.features[0].attributes);
+                if (graphic.geometry)
+                {
+
+                    graphic.infoWindowRenderer = createInfoWindowRenderer(featureSet.fields, "", "Mobile InfoWindow");
+                    contentNavigator.dataProvider = new ArrayList([ graphic ]);
+                    graphicsLayer.add(graphic);
+
+                    var locationCentroid:MapPoint = new MapPoint();
+                    (graphic.geometry is MapPoint ? locationCentroid = graphic.geometry as MapPoint : locationCentroid = graphic.geometry.extent.center)
+
+                    map.infoWindow.show(graphic.geometry is MapPoint ? graphic.geometry as MapPoint : graphic.geometry.extent.center);
+                }
+
+            }
+        ]]>
+    </fx:Script>
+
+    <fx:Declarations>
+        <esri:PictureMarkerSymbol id="pms"
+                                  width="32" height="32"
+                                  source="assets/images/FastFood.png"/>
+
+    </fx:Declarations>
+
+    <esri:Map id="map"
+              level="17"
+              load="map_loadHandler(event)">
+        <esri:center>
+            <esri:WebMercatorMapPoint lon="-117.261828" lat="34.066449"/>
+        </esri:center>
+        <esri:ArcGISTiledMapServiceLayer url="http://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer"/>
+        <esri:GraphicsLayer id="graphicsLayer"/>
+    </esri:Map>
+</s:View>
