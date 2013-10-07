@@ -53,7 +53,8 @@
             <fieldClasses:LabelField minWidth="200"/>
         </fx:Component>
         <fx:Component id="memoField">
-            <fieldClasses:MemoField minWidth="200"/>
+            <!--<fieldClasses:MemoField minWidth="200"/>-->
+            <fieldClasses:TextField minWidth="200"/>
         </fx:Component>
         <fx:Component id="rangeDomainField">
             <fieldClasses:RangeDomainField minWidth="200"/>
