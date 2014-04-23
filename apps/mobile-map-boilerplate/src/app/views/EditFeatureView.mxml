@@ -25,7 +25,6 @@
     <fx:Script>
         <![CDATA[
             import com.esri.ags.Graphic;
-            import com.esri.ags.esri_internal;
             import com.esri.ags.layers.FeatureLayer;
             import com.esri.mobile.managers.supportClasses.InfoWindowData;
 
@@ -47,7 +46,7 @@
 
 
                 attributeInspector.featureLayers = [ featureLayer ];
-                attributeInspector.esri_internal::showFeature(graphic, featureLayer);
+                attributeInspector.showFeature(graphic, featureLayer);
             }
         ]]>
     </fx:Script>
