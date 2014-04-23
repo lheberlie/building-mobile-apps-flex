@@ -231,7 +231,7 @@ public class AttributeInspectorRenderer extends ItemRenderer
             m_refreshRendererData = false;
         }
     }
-    
+
     /**
      * @private
      */
@@ -266,10 +266,10 @@ public class AttributeInspectorRenderer extends ItemRenderer
 
     override protected function drawBackground(unscaledWidth:Number, unscaledHeight:Number):void
     {
-       /* graphics.beginFill(0xEEEEEE, 1.0);
-        graphics.drawRect(layoutGap, 0, unscaledWidth - 2 * layoutGap, unscaledHeight);
-        graphics.endFill();
-        */
+        /* graphics.beginFill(0xEEEEEE, 1.0);
+         graphics.drawRect(layoutGap, 0, unscaledWidth - 2 * layoutGap, unscaledHeight);
+         graphics.endFill();
+         */
         var seperatorY:Number = 0;
         if (labelDisplay)
         {
@@ -309,19 +309,19 @@ public class AttributeInspectorRenderer extends ItemRenderer
             setElementSize(m_renderer, Math.min(rendererWidth, viewWidth), viewHeight - labelHeight - layoutGap * 1.5);
         }
     }
-    
-    
+
+
     //--------------------------------------------------------------------------
     //
     //  Event handlers
     //
     //--------------------------------------------------------------------------
-    
+
     /**
-     * 
-     * 
+     *
+     *
      * @param renderer
-     * @return 
+     * @return
      */
     private function swapNonMobileFriendlyComponent(renderer:UIComponent):UIComponent
     {
@@ -352,7 +352,7 @@ public class AttributeInspectorRenderer extends ItemRenderer
         }
         return result;
     }
-    
+
 
     //--------------------------------------------------------------------------
     //
