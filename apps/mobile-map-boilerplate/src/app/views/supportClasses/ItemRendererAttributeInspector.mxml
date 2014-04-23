@@ -19,23 +19,20 @@
 <s:ItemRenderer xmlns:fx="http://ns.adobe.com/mxml/2009"
                 xmlns:s="library://ns.adobe.com/flex/spark"
                 xmlns:esri="http://www.esri.com/2008/ags"
-                dataChange="dataChangeHandler(event)"
-                autoDrawBackground="false">
+                autoDrawBackground="false"
+                dataChange="dataChangeHandler(event)">
 
     <fx:Script>
         <![CDATA[
-            import com.esri.ags.esri_internal;
             import com.esri.ags.layers.FeatureLayer;
             import com.esri.mobile.managers.supportClasses.InfoWindowData;
-            
+
             import mx.events.FlexEvent;
-            
-            use namespace esri_internal;
-            
+
             override protected function measure():void
             {
                 super.measure();
-                
+
                 measuredWidth = attributeInspector.getExplicitOrMeasuredWidth();
                 measuredHeight = attributeInspector.getExplicitOrMeasuredHeight();
             }
@@ -50,7 +47,7 @@
                     if (featureLayer)
                     {
                         // ycabon: Not supported yet call to showFeature
-                        attributeInspector.esri_internal::showFeature(infoWindowData.graphic, featureLayer);
+                        attributeInspector.showFeature(infoWindowData.graphic, featureLayer);
                     }
                 }
             }
